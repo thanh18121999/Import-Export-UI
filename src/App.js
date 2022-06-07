@@ -1,25 +1,27 @@
-import logo from './logo.svg';
-import './App.css';
+import { Tabs } from 'antd';
+import { useState } from 'react';
+import TableInWarehouse from './components/TableInWarehouse';
+import TableWaitingForImport from './components/TableWaitingForImport';
+import TableWaitingForExport from './components/TableWaitingForExport';
 
-function App() {
+const { TabPane } = Tabs;
+const ManageWarehouseImportExportOrder = () => {
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Tabs tabPosition='left'>
+        <TabPane tab="Chờ nhập kho" key="0">
+          <TableWaitingForImport />
+        </TabPane>
+        <TabPane tab="Đang lưu kho" key="1">
+          <TableInWarehouse />
+        </TabPane>
+        <TabPane tab="Chờ xuất kho" key="2">
+          <TableWaitingForExport />
+        </TabPane>
+      </Tabs>
+    </>
   );
-}
+};
 
-export default App;
+export default ManageWarehouseImportExportOrder;
