@@ -5,34 +5,39 @@ import FormConfirmExport from './FormConfirmExport';
 
 const columns = [
   {
-    title: 'Mã đơn hàng',
+    title:'Mã đơn hàng',
     dataIndex: 'ordercode',
-    width : 'auto',
+    width: 'auto',
     render: (text) => <a>{text}</a>
   },
   {
-    title: 'Khu',
-    dataIndex: '',
-    width : 'auto',
+      title:'Địa chỉ gửi',
+      dataIndex: 'senderaddress',
+      width: 'auto',
   },
   {
-    title: 'Ô',
-    dataIndex: '',
-    width : 'auto',
+      title:'Địa chỉ nhận',
+      dataIndex: 'receiveraddress',
+      width: 'auto',
   },
   {
-    title: 'Kệ',
-    dataIndex: '',
-    width : 'auto',
+      title:'Khối lượng',
+      dataIndex: 'weight',
+      width: 'auto',
   },
   {
-    title: 'Chi tiết đơn hàng',
-    key: 'action',
-    width : 'auto',
-    render: (text) => (
-        <Button style={{backgroundColor: '#66ff99'}}>
-          XEM CHI TIẾT
-        </Button>
+      title:'COD',
+      dataIndex: 'cod',
+      width: 'auto',
+  },
+  {
+      title:'Action',
+      dataIndex: 'action',
+      width: 'auto',
+      render:(text) => (
+          <Tag color = {'green'}>
+              GIAO BƯU TÁ
+          </Tag>
       )
   },
 ];
@@ -126,9 +131,9 @@ const defaultExpandable = {
 };
 const TableInWarehouse = () => {
     const [data,setData] = useState([]);
+    const [hasData, setHasData] = useState(true);
     const [SelectedData, setSelectedData] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [hasData, setHasData] = useState(true);
     const successMessage = () => {
         message.success("Nhập kho thành công")
     } 
@@ -143,7 +148,7 @@ const TableInWarehouse = () => {
                                       <Button hidden={!SelectedData.length} type="primary">Giao nhận</Button>
                                     </Space>                                
                                 </Space>;    
-  const HandleSetSelectedData = (e)=>{
+  const HandleSetSelectedData = (e) =>{
     setSelectedData(e)
   }
   const tableColumns = columns.map((item) => ({ ...item, ellipsis : true }));
@@ -168,8 +173,19 @@ const TableInWarehouse = () => {
     setIsConfirmExportShow(false);
   };
   const  getSelectedData = () =>{
-    return SelectedData;
+    var ordersSelected = orders.filter(x=> SelectedData.includes(x.id));
+    return ordersSelected;
   }
+
+  const deleteData = (item) => {
+    let newData = [...SelectedData]
+    let index = SelectedData.indexOf(item.id)
+    if (index !== -1) {
+      newData.splice(index, 1)
+      setSelectedData(newData)
+    }
+  }
+
   return (
     <>
       <Table
@@ -181,8 +197,8 @@ const TableInWarehouse = () => {
         dataSource={hasData ? orders : []}
         scroll={{y : 700}}
       />
-      <Modal title="Phiếu xuất kho" width = '60%' visible={IsConfirmExportShow} onCancel={HandleClose} footer={false}>
-        < FormConfirmExport onCancel={HandleClose} getSelectdddedData = {getSelectedData}/>
+      <Modal title="Phiếu xuất kho" width = '80%' visible={IsConfirmExportShow} onCancel={HandleClose}  >
+        < FormConfirmExport onCancel={HandleClose} getSelectedData = {getSelectedData} deleteData = {deleteData} />
       </Modal>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
     </>
   );

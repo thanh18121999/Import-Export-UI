@@ -1,6 +1,7 @@
-import { Card, DatePicker, Space , Divider, Avatar, Descriptions,List,Tabs,Input,Badge } from 'antd';
-import { Button } from 'antd/lib/radio';
-import { useState } from 'react';
+import { Card, DatePicker, Space , Divider, Avatar, Descriptions,List,Tabs,Input,Badge,Button } from 'antd';
+// import { Button } from 'antd/lib/radio';
+import { useState,useEffect } from 'react';
+import CloseCircleOutlined from '@ant-design/icons/CloseCircleOutlined';
 const {TextArea} = Input;
 const {TabPane} = Tabs;
 const {RangePicker} = DatePicker;
@@ -54,12 +55,96 @@ const warehouses = [
         districtcode: '5',
         wardcode: '5',
     }
-];      
+];
+const orders = [
+    {
+        "key": "4fbe3948-d943-45b9-a95b-580c52e54d00",
+        "id": "4fbe3948-d943-45b9-a95b-580c52e54d00",
+        "shipno": "IUTTGVET1",
+        "dropofftype": "1",
+        "servicetype": "1",
+        "ordercode": "IUTTGVET",
+        "shippingchargespayment": "Sender",
+        "deliverystatus": "PICKUP_WAITING",
+        "timeregister": "5/19/2022 3:45:51 PM",
+        "sendername": "Thành vip pro",
+        "senderphone": "0123456789",
+        "senderaddress": "thu duc, vn",
+        "sendercountrycode": "VN",
+        "sendercitycode": "VN-SG",
+        "senderdistrictcode": "71010",
+        "senderwardcode": "71020",
+        "senderpostalcode": "71000",
+        "receivername": "test3",
+        "receiverphone": "0987654321",
+        "receiveraddress": "hanoi, vn",
+        "receivercountrycode": "VN",
+        "receivercitycode": "VN-HN",
+        "receiverdistrictcode": "Cầu Giấy",
+        "receiverwardcode": "1",
+        "receiverpostalcode": "100000",
+        "totalpackages": 2,
+        "servicepostage": 1,
+        "addedpostage": 1,
+        "codpostage": 1,
+        "surcharge": 1,
+        "totalpostage": 1,
+        "vat": 1,
+        "weight": 12,
+        "cod": 300,
+        "currency": "VND",
+        "content": null,
+        "note": null,
+        "warehouse": "WH01"
+    },
+    {
+        "key": "47fb9e2a-840f-4444-b730-24ddb31cddca",
+        "id": "47fb9e2a-840f-4444-b730-24ddb31cddca",
+        "shipno": "EGDUIEEH1",
+        "dropofftype": "1",
+        "servicetype": "1",
+        "ordercode": "EGDUIEEH",
+        "shippingchargespayment": "Sender",
+        "deliverystatus": "PICKUP_WAITING",
+        "timeregister": "5/19/2022 4:15:14 PM",
+        "sendername": "Thắng ",
+        "senderphone": "0747852369",
+        "senderaddress": "01/01",
+        "sendercountrycode": "VN",
+        "sendercitycode": "VN-SG",
+        "senderdistrictcode": "71010",
+        "senderwardcode": "P3",
+        "senderpostalcode": "700000",
+        "receivername": "Thành ",
+        "receiverphone": "0926985147",
+        "receiveraddress": "02/01",
+        "receivercountrycode": "VN",
+        "receivercitycode": "VN-HN",
+        "receiverdistrictcode": "Cầu Giấy",
+        "receiverwardcode": "P3",
+        "receiverpostalcode": "100000",
+        "totalpackages": 1,
+        "servicepostage": 1,
+        "addedpostage": 1,
+        "codpostage": 1,
+        "surcharge": 1,
+        "totalpostage": 1,
+        "vat": 1,
+        "weight": 65,
+        "cod": 10,
+        "currency": "VND",
+        "content": null,
+        "note": null,
+        "warehouse": "WH01"
+    }
+  ];  
 
 const OnSelectDateChange = (e) => {
     console.log(e[0].format("MM-DD-YYYY"))
 }
 const FormConfirmExport = (props) => {
+    const {getSelectedData, deleteData, onCancel} = props;
+    const dataSelected = getSelectedData();
     const [DataCreateConfirmExport, SetdataCreateConfirmExport] = useState({
         Receipts : {
             Name : "",
@@ -78,6 +163,7 @@ const FormConfirmExport = (props) => {
             },
         });
         SetConfirmExport(null)
+        onCancel();
     }
     const OnTypingData = (e) => {
         SetdataCreateConfirmExport(prevState =>({
@@ -90,6 +176,15 @@ const FormConfirmExport = (props) => {
     }
     console.log(DataCreateConfirmExport);
     const [ConfirmExport,SetConfirmExport] = useState(null);
+
+    // Khi data null thi close form
+    useEffect(()=>{
+        if(dataSelected.length <= 0)
+        {
+            HandleClose()
+        }
+    },[dataSelected.length])
+
     return (
     <>
     <Space
@@ -97,11 +192,12 @@ const FormConfirmExport = (props) => {
         size="middle"
         style={{
         display: 'grid',
-        gridTemplateColumns : '1fr auto 2.2fr'
+        gridTemplateColumns : '1.5fr 2.2fr 1.5fr'
         }}
     >
         <Card style={{ height : '100%'}}>
-            <Divider orientation="left">Chọn kho đến</Divider>
+            <p style ={{fontSize:'18px',fontWeight:'700'}}>Chọn kho</p>
+            <Divider orientation="left">Danh sách kho</Divider>
             <List
                 style={{height : '266px', overflow : 'auto'}}
                 itemLayout="horizontal"
@@ -117,7 +213,7 @@ const FormConfirmExport = (props) => {
                 )}                
             />     
         </Card>
-        <Divider type="vertical" style={{height : '100%'}}/>
+        {/* <Divider type="vertical" style={{height : '100%'}}/> */}
         <Tabs defaultActiveKey="1" >
             <TabPane tab="Thông tin phiếu xuất kho" key="1">
             <Space direction="vertical">
@@ -136,17 +232,19 @@ const FormConfirmExport = (props) => {
                         direction="horizonal"
                         size="middle"
                         style={{
-                        display: 'flex',
+                        display: 'block',
                         }}
                     > 
                         {
                             ConfirmExport ? 
                             <>
-                            <Avatar
-                                size={{ xs: 24, sm: 32, md: 70, lg: 64, xl: 80, xxl: 100 }}
-                                //icon={<AntDesignOutlined />}
-                            />
-                            <Divider type="vertical" style={{height : '100%'}}/>
+                            <div style={{display: 'flex', justifyContent : 'center',}}>
+                                <Avatar src="https://joeschmoe.io/api/v1/random"
+                                    size={{ xs: 24, sm: 32, md: 70, lg: 64, xl: 80, xxl: 100 }}
+                                    //icon={<AntDesignOutlined />}
+                                />
+                            </div>
+                            <Divider type="horizonal" style={{height : '100%'}}/>
                             <Descriptions  column={4}>
                                 <Descriptions.Item  span={4} label="Tên">{ConfirmExport.name ? ConfirmExport.name  : "Empty"}</Descriptions.Item>
                                 <Descriptions.Item  span={4} label="Vị trí">{ConfirmExport.location ?  ConfirmExport.location : "Empty" }</Descriptions.Item>
@@ -169,6 +267,30 @@ const FormConfirmExport = (props) => {
                 </Card>
             </TabPane>
         </Tabs>
+        <Card style={{ height : '100%'}}>
+            <Divider orientation="left">Danh sách đơn</Divider>
+            <div style={{display: 'flex',justifyContent : 'flex-end',}}>
+                <Button type="primary" style={{}}>Thêm đơn</Button>
+            </div>
+                    <List
+                        style={{height : '266px', overflow : 'auto'}}
+                        itemLayout="horizontal"
+                        dataSource={dataSelected}
+                        renderItem={(orders) => (
+                            <List.Item>
+                                <List.Item.Meta 
+                                avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
+                                title={orders.ordercode}
+                                description={orders.senderphone}
+                                />                 
+                                    <CloseCircleOutlined onClick={() =>
+                                        deleteData(orders)} style ={{fontSize:'25px'}}
+                                    />
+                            </List.Item>
+                            
+                        )}                
+                    />
+        </Card>
     </Space>
     <Space direction="horizonal"
         size="middle"
@@ -179,7 +301,7 @@ const FormConfirmExport = (props) => {
         }}
     >
         <Button onClick={HandleClose}>Làm mới</Button>
-        <Button type="primary" >Xuất kho</Button>
+        <Button >Xuất kho</Button>
     </Space>
     </>
     );
