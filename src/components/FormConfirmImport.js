@@ -1,299 +1,101 @@
-import { Space, Tag, Input, Table, DatePicker,Card, message } from 'antd';
+import { Card, Space , Divider, Avatar, Descriptions,List,Tabs,Input,Badge } from 'antd';
 import { Button } from 'antd/lib/radio';
 import { useState } from 'react';
+const {TextArea} = Input;
+const {TabPane} = Tabs;
 
-const orders = [
-    {
-        "key": "4fbe3948-d943-45b9-a95b-580c52e54d00",
-        "id": "4fbe3948-d943-45b9-a95b-580c52e54d00",
-        "ticketID": "4fbe3948-d943-45b9-a95b-580c52e54d00",
-        "shipno": "IUTTGVET1",
-        "dropofftype": "1",
-        "servicetype": "1",
-        "ordercode": "IUTTGVET",
-        "shippingchargespayment": "Sender",
-        "deliverystatus": "PICKUP_WAITING",
-        "timeregister": "5/19/2022 3:45:51 PM",
-        "sendername": "Thành vip pro",
-        "senderphone": "0123456789",
-        "senderaddress": "thu duc, vn",
-        "sendercountrycode": "VN",
-        "sendercitycode": "VN-SG",
-        "senderdistrictcode": "71010",
-        "senderwardcode": "71020",
-        "senderpostalcode": "71000",
-        "receivername": "test3",
-        "receiverphone": "0987654321",
-        "receiveraddress": "hanoi, vn",
-        "receivercountrycode": "VN",
-        "receivercitycode": "VN-HN",
-        "receiverdistrictcode": "Cầu Giấy",
-        "receiverwardcode": "1",
-        "receiverpostalcode": "100000",
-        "totalpackages": 2,
-        "servicepostage": 1,
-        "addedpostage": 1,
-        "codpostage": 1,
-        "surcharge": 1,
-        "totalpostage": 1,
-        "vat": 1,
-        "weight": 12,
-        "cod": 300,
-        "currency": "VND",
-        "content": null,
-        "note": null,
-        "warehouse": "WH01"
-    },
-    {
-        "key": "47fb9e2a-840f-4444-b730-24ddb31cddca",
-        "id": "47fb9e2a-840f-4444-b730-24ddb31cddca",
-        "ticketID": "4fbe3948-d943-45b9-a95b-580c52e54d00",
-        "shipno": "EGDUIEEH1",
-        "dropofftype": "1",
-        "servicetype": "1",
-        "ordercode": "EGDUIEEH",
-        "shippingchargespayment": "Sender",
-        "deliverystatus": "PICKUP_WAITING",
-        "timeregister": "5/19/2022 4:15:14 PM",
-        "sendername": "Thắng ",
-        "senderphone": "0747852369",
-        "senderaddress": "01/01",
-        "sendercountrycode": "VN",
-        "sendercitycode": "VN-SG",
-        "senderdistrictcode": "71010",
-        "senderwardcode": "P3",
-        "senderpostalcode": "700000",
-        "receivername": "Thành ",
-        "receiverphone": "0926985147",
-        "receiveraddress": "02/01",
-        "receivercountrycode": "VN",
-        "receivercitycode": "VN-HN",
-        "receiverdistrictcode": "Cầu Giấy",
-        "receiverwardcode": "P3",
-        "receiverpostalcode": "100000",
-        "totalpackages": 1,
-        "servicepostage": 1,
-        "addedpostage": 1,
-        "codpostage": 1,
-        "surcharge": 1,
-        "totalpostage": 1,
-        "vat": 1,
-        "weight": 65,
-        "cod": 10,
-        "currency": "VND",
-        "content": null,
-        "note": null,
-        "warehouse": "WH01"
-    },
-    {
-      "key": "47fb9e2a-840f-4444-b730-24ddb31cddcx",
-      "id": "47fb9e2a-840f-4444-b730-24ddb31cddcx",
-      "ticketID": "4fbe3948-d943-45b9-a95b-580c52e54d01",
-      "shipno": "EGDUIEEH2",
-      "dropofftype": "1",
-      "servicetype": "1",
-      "ordercode": "EGDUBGEH",
-      "shippingchargespayment": "Sender",
-      "deliverystatus": "PICKUP_WAITING",
-      "timeregister": "5/19/2022 4:15:14 PM",
-      "sendername": "Thắng cute ",
-      "senderphone": "0747852369",
-      "senderaddress": "Heaven",
-      "sendercountrycode": "VN",
-      "sendercitycode": "VN-SG",
-      "senderdistrictcode": "71010",
-      "senderwardcode": "P3",
-      "senderpostalcode": "700000",
-      "receivername": "Phúc Boiz ",
-      "receiverphone": "0926985147",
-      "receiveraddress": "Hell",
-      "receivercountrycode": "VN",
-      "receivercitycode": "VN-HN",
-      "receiverdistrictcode": "Cầu Giấy",
-      "receiverwardcode": "P3",
-      "receiverpostalcode": "100000",
-      "totalpackages": 1,
-      "servicepostage": 1,
-      "addedpostage": 1,
-      "codpostage": 1,
-      "surcharge": 1,
-      "totalpostage": 1,
-      "vat": 1,
-      "weight": 65,
-      "cod": 10,
-      "currency": "VND",
-      "content": null,
-      "note": null,
-      "warehouse": "WH01"
+const FormConfirmImport = (props) => {
+    const [DataCreateConfirmImport, SetdataCreateConfirmImport] = useState({
+        Receipts : {
+            Name : "",
+            CreatedDate : "",
+            Description : "",
+            Type : "CONFIRMIMPORTRECEIPT" ,
+        },
+    })   
+    const HandleClose = () => {
+        SetdataCreateConfirmImport({
+            Receipts : {
+            Name : "",
+            CreatedDate : "",
+            Description : "",
+            Type : "CONFIRMIMPORTRECEIPT" ,
+            },
+        });
+        SetConfirmImport(null)
     }
-];
-
-const FormConfirmImport = () => {
-
-    const dateFormat = 'DD/MM/YYYY';
-    const [SelectedData, setSelectedData] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [data, setData] = useState(orders);
-    const [chosenData, setChosenData] = useState([])
-    const chooseOrder = (e)=>{
-        const temp = [...data]
-        const chosenItem = temp.find((item)=> item.id === e.id)
-        setChosenData([...chosenData,chosenItem])
-        const idx = temp.findIndex((item)=> item.id === e.id)
-        const temp1 = [...data]
-        temp1.splice(idx,1) 
-        setData(temp1)
+    const OnTypingData = (e) => {
+        SetdataCreateConfirmImport(prevState =>({
+            ...prevState,
+            Receipts : {
+                ...prevState.Receipts,
+                [e.target.name] : e.target.value
+            }
+        }))
     }
-    const unChooseOrder = (e)=>{
-        const temp = [...chosenData]
-        const chosenItem = temp.find((item)=> item.id === e.id)
-        setData([...data,chosenItem])
-        const idx = temp.findIndex((item)=> item.id === e.id)
-        const temp1 = [...chosenData]
-        temp1.splice(idx,1) 
-        setChosenData(temp1)
-    }
-
-    const HandleSetSelectedData = (e)=>{
-        setSelectedData(e)
-    }
-    // table
-
-    const listOrderColumns = [
-        {
-          title: 'Mã đơn',
-          dataIndex: 'ordercode',
-          width : '20%',
-          render: (text) => <a>{text}</a>
-        },
-        {
-          title: 'Địa chỉ gửi',
-          dataIndex: 'senderaddress',
-          width : '20%',
-        },
-        {
-          title: 'Địa chỉ nhận',
-          dataIndex: 'receiveraddress',
-          width : '20%',
-        },
-        {
-          title: 'Khối lượng',
-          dataIndex: 'weight',
-          width : '20%',
-        },
-        {
-          key: 'action',
-          width : 'auto',
-          render: (_,record) => (
-              <Tag color={"green"} onClick={()=>chooseOrder(record)}>
-                 Chọn
-              </Tag>
-          )
-        },
-    ];
-    const chosenColumns = [
-        {
-          title: 'Mã đơn',
-          dataIndex: 'ordercode',
-          width : '20%',
-          render: (text) => <a>{text}</a>
-        },
-        {
-          title: 'Địa chỉ gửi',
-          dataIndex: 'senderaddress',
-          width : '20%',
-        },
-        {
-          title: 'Địa chỉ nhận',
-          dataIndex: 'receiveraddress',
-          width : '20%',
-        },
-        {
-          title: 'Khối lượng',
-          dataIndex: 'weight',
-          width : '20%',
-        },
-        {
-          key: 'action',
-          width : 'auto',
-          render: (_,record) => (
-              <Tag color={"red"} onClick={()=>unChooseOrder(record)}>
-                 Xóa
-              </Tag>
-          )
-        },
-    ];
-    // end table
-    const listOrderColumn = listOrderColumns.map((item) => ({ ...item, ellipsis : true }));
-    const chosenColumn = chosenColumns.map((item) => ({ ...item, ellipsis : true }));
-    const listOrderProps = {
-    bordered : true,
-    pagination : false,
-    loading,
-    size : 'middle',
-    showHeader : true,
-    rowSelection : {
-        onChange : (e) => HandleSetSelectedData(e) 
-    },
-    tableLayout : 'unset' ,
-    };
-    const chosenProps = {
-        bordered : true,
-        pagination : false,
-        loading,
-        size : 'middle',
-        showHeader : true,
-        tableLayout : 'unset' ,
-        };
-
+    console.log(SetdataCreateConfirmImport);
+    const [ConfirmImport,SetConfirmImport] = useState(null);
     return (
     <>
     <Space
-        direction="horizontal"
+        direction="horizonal"
         size="middle"
         style={{
-            display: 'flex',
+        display: 'grid',
+        gridTemplateColumns : '1fr auto 2.2fr'
         }}
     >
+        <Card style={{ height : '100%'}}>
+            <Divider orientation="left">Danh sách đơn hàng</Divider>
+        </Card>
+        <Divider type="vertical" style={{height : '100%'}}/>
+        <Tabs defaultActiveKey="1" >
+            <TabPane tab="Thông tin phiếu nhập kho" key="1">
             <Space direction="vertical">
-                <Space direction="horizontal">
-                    <Input name='Name' addonBefore="Tên phiếu " />
-                    <DatePicker
-                        format={dateFormat}
-                        placeholder="Ngày tạo"
-                    />
+                <Space direction="horizonal">
+                    <Input value = {DataCreateConfirmImport.Receipts.Name} name='Name' addonBefore="Tên phiếu " onChange={OnTypingData}  />
+                    <Input value = {DataCreateConfirmImport.Receipts.CreatedDate} name='Name' addonBefore="Ngày tạo " onChange={OnTypingData}  />
                 </Space>
+                <Divider orientation="left">Mô tả</Divider>
+                <TextArea value = {DataCreateConfirmImport.Receipts.Description} name='Description' rows={5} placeholder="Description" onChange={OnTypingData} />
             </Space>
+            </TabPane>
+            <TabPane tab = {<Badge style={{marginTop : '-5px'}} count={ConfirmImport ? ConfirmImport.name : ""} color="cyan">Thông tin đơn hàng</Badge>} key="2">
+                <Card size="middle">
+                    <Space
+                        direction="horizonal"
+                        size="middle"
+                        style={{
+                        display: 'flex',
+                        }}
+                    > 
+                        {
+                            ConfirmImport ? 
+                            <>
+                            <Avatar
+                                size={{ xs: 24, sm: 32, md: 70, lg: 64, xl: 80, xxl: 100 }}
+                                //icon={<AntDesignOutlined />}
+                            />
+                            <Divider type="vertical" style={{height : '100%'}}/>
+                            <Descriptions  column={4}>
+                                
+                            </Descriptions> </>
+                            : null
+                        }
+                    </Space>
+                    <Space
+                        direction="horizonal"
+                        size="middle"
+                        style={{
+                        display: 'flex',
+                        }}
+                    > 
+                    </Space>
+                </Card>
+            </TabPane>
+        </Tabs>
     </Space>
-    <Space
-        direction="horizontal"
-        size="middle"
-        style={{
-            display: 'flex',
-        }}
-    >
-        <Card>
-            Danh sách đơn hàng trong phiếu
-            <Table
-                {...listOrderProps}
-                columns={listOrderColumn}
-                dataSource={data}
-                scroll={{y : 700}}
-            >
-            </Table>
-        </Card>
-        <Card>
-            Danh sách đơn hàng chọn lưu kho
-            <Table
-                {...chosenProps}
-                columns={chosenColumn}
-                dataSource={chosenData}
-                scroll={{y : 700}}
-            >
-            </Table>
-        </Card>
-    </Space>
-    <Space direction="horizontal"
+    <Space direction="horizonal"
         size="middle"
         style={{
             display: 'flex' ,
@@ -301,7 +103,7 @@ const FormConfirmImport = () => {
             columnGap : '.8rem'
         }}
     > 
-        <Button type="primary" >Làm mới</Button>
+        <Button onClick={HandleClose}>Làm mới</Button>
         <Button type="primary" >Xác nhận nhập kho</Button>
     </Space>
     </>

@@ -1,17 +1,17 @@
-import { Space, Modal, Table, Button, message, Tag } from 'antd';
+import { Form, Typography, Space, Modal, Table, Tag,Card, Button, message } from 'antd';
 import { useState, useEffect } from 'react';
 import FormConfirmImport from './FormConfirmImport';
 
 const columns = [
   {
     title: 'Mã phiếu',
-    dataIndex: 'id',
+    dataIndex: 'ticketID',
     width : '20%',
     render: (text) => <a>{text}</a>
   },
   {
     title: 'Tên phiếu',
-    dataIndex: 'name',
+    dataIndex: 'ticketName',
     width : 'auto',
   },
   {
@@ -39,18 +39,17 @@ const columns = [
     key: 'action',
     width : 'auto',
     render: () => (
-        <Tag color={"green"}>
+        <Button style={{backgroundColor: '#66ff99'}}>
            XEM CHI TIẾT
-        </Tag>
+        </Button>
     )
   },
 ];
-
 const importLists = [
   {
     "key": "4fbe3948-d943-45b9-a95b-580c52e54d00",
-    "id": "4fbe3948-d943-45b9-a95b-580c52e54d00",
-    "name": "Phiếu 1",
+    "ticketID": "4fbe3948-d943-45b9-a95b-580c52e54d00",
+    "ticketName": "Phiếu 1",
     "description": "Phiếu thu được tạo ngày 30-5",
     "createdDate": "30-05-2022",
     "createdUser": "Thắng xe ôm",
@@ -58,8 +57,8 @@ const importLists = [
   },
   {
     "key": "4fbe3948-d943-45b9-a95b-580c52e54d01",
-    "id": "4fbe3948-d943-45b9-a95b-580c52e54d01",
-    "name": "Phiếu 2",
+    "ticketID": "4fbe3948-d943-45b9-a95b-580c52e54d01",
+    "ticketName": "Phiếu 2",
     "description": "Phiếu thu 2 được tạo ngày 30-5",
     "createdDate": "30-05-2022",
     "createdUser": "Thắng xe ôm",
@@ -198,22 +197,32 @@ const TableWaitingForImport = () => {
     const [SelectedData, setSelectedData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [hasData, setHasData] = useState(true);
+    const successMessage = () => {
+        message.success("Nhập kho thành công")
+    } 
+    const failMessage = () => {
+        message.error("Nhập kho thất bại")
+    } 
 
-    const HandleSetSelectedData = (e)=>{
-      setSelectedData(e)
-    }
+    const defaultTitle = () => <Space direction="horizonal" style={{display : 'flex', justifyContent : 'space-between', padding : '.8rem', fontWeight : 'bold',}}>
+                                    <p>Kho: </p>
+                                    <Button  onClick={ShowConfirmImport} hidden={!SelectedData.length} type="primary">Nhập kho tất cả</Button>
+                                </Space>;
 
-  const defaultTitle = () => 
-    <Space direction="horizonal" style={{display : 'flex', justifyContent : 'space-between', padding : '.8rem', fontWeight : 'bold',}}>
-      <p>Kho: </p>
-      <Button onClick={ShowConfirmImportForm} hidden={!SelectedData.length} type="primary">Nhập kho</Button>
-    </Space>;
-  
+  const HandleSetSelectedData = (e)=>{
+    setSelectedData(e)
+  }
+  const defaultExpandable = {
+    expandedRowRender: (record) => <Space direction="horizonal" size="middle" style={{ display: 'grid', gridTemplateColumns : "1fr 1fr 1fr" }} dataSource={hasData ? orders : []}>                               
+                                    
+                                  </Space>,
+  };
   const tableColumns = columns.map((item) => ({ ...item, ellipsis : true }));
   const tableProps = {
     bordered : true,
     loading,
     size : 'middle',
+    expandable : defaultExpandable,
     title:  defaultTitle,
     showHeader : true,
     rowSelection : {
@@ -221,13 +230,13 @@ const TableWaitingForImport = () => {
     },
     tableLayout : 'unset' ,
   };
-  const [IsConfirmImportFormShow, setIsConfirmImportFormShow] = useState(false);
+  const [IsConfirmImportShow, setIsConfirmImportShow] = useState(false);
 
-  const ShowConfirmImportForm = () => {
-    setIsConfirmImportFormShow(true);
+  const ShowConfirmImport = () => {
+    setIsConfirmImportShow(true);
   };
   const HandleClose = () => {
-    setIsConfirmImportFormShow(false);
+    setIsConfirmImportShow(false);
   };
   const  getSelectedData = () =>{
     return SelectedData;
@@ -243,7 +252,7 @@ const TableWaitingForImport = () => {
         dataSource={hasData ? importLists : []}
         scroll={{y : 700}}
       />
-      <Modal title="Phiếu nhập kho" width = '100%' visible={IsConfirmImportFormShow} onCancel={HandleClose} footer={false}>
+      <Modal title="Phiếu nhập kho" width = '60%' visible={IsConfirmImportShow} onCancel={HandleClose} footer={false}>
         < FormConfirmImport onCancel={HandleClose} getSelectdddedData = {getSelectedData}/>
       </Modal> 
     </>

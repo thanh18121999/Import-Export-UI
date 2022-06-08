@@ -1,4 +1,4 @@
-import { Space, Table, Modal, Tag,Card, Button, message } from 'antd';
+import { Space, Table, Modal, Tag,Card, Button, message, Popconfirm } from 'antd';
 import Title from 'antd/lib/skeleton/Title';
 import { useState, useEffect } from 'react';
 import FormConfirmExport from './FormConfirmExport';
@@ -117,7 +117,7 @@ const orders = [
       "note": null,
       "warehouse": "WH01"
   }
-]
+];
 
 const defaultExpandable = {
   expandedRowRender: (record) => <Space direction="horizonal" size="middle" style={{ display: 'grid', gridTemplateColumns : "1fr 1fr 1fr" }}>
@@ -136,18 +136,18 @@ const TableInWarehouse = () => {
         message.error("Nhập kho thất bại")
     } 
 
-    const defaultTitle = () => <Space direction="horizonal" style={{display : 'flex', justifyContent : 'space-between', padding : '.8rem', fontWeight : 'bold',}}>
+const defaultTitle = () => <Space direction="horizonal" style={{display : 'flex', justifyContent : 'space-between', padding : '.8rem', fontWeight : 'bold',}}>
                                     <p>Kho: </p>
                                     <Space>
                                       <Button onClick={ShowConfirmExport} hidden={!SelectedData.length} type="primary">Điều chuyển</Button>
                                       <Button hidden={!SelectedData.length} type="primary">Giao nhận</Button>
                                     </Space>                                
                                 </Space>;    
-  const HandleSetSelectedData = (e)=>{
+const HandleSetSelectedData = (e)=>{
     setSelectedData(e)
   }
-  const tableColumns = columns.map((item) => ({ ...item, ellipsis : true }));
-  const tableProps = {
+const tableColumns = columns.map((item) => ({ ...item, ellipsis : true }));
+const tableProps = {
     bordered : true,
     loading,
     size : 'middle',
@@ -159,17 +159,33 @@ const TableInWarehouse = () => {
     },
     tableLayout : 'unset' ,
   };
-  const [IsConfirmExportShow, setIsConfirmExportShow] = useState(false);
+const [IsConfirmExportShow, setIsConfirmExportShow] = useState(false);
 
-  const ShowConfirmExport = () => {
+const ShowConfirmExport = () => {
     setIsConfirmExportShow(true);
   };
-  const HandleClose = () => {
+
+// const HandleDeleteAll = (id) => {
+//     setSelectedData(SelectedData => SelectedData.splice(item => item.id));
+// };
+
+const deleteData = (item) => {
+    let new_array = [...SelectedData]
+    let index = SelectedData.indexOf(item.id)
+    if (index !== -1) {
+      new_array.splice(index, 1)
+      setSelectedData(new_array)
+    }
+};
+
+const HandleClose = () => {
     setIsConfirmExportShow(false);
-  };
-  const  getSelectedData = () =>{
-    return SelectedData;
-  }
+};
+const getSelectedData = () =>{
+    var orderSelected = orders.filter(x => SelectedData.includes(x.id))
+    return orderSelected;
+}
+  
   return (
     <>
       <Table
@@ -180,9 +196,10 @@ const TableInWarehouse = () => {
         columns={tableColumns}
         dataSource={hasData ? orders : []}
         scroll={{y : 700}}
+        
       />
-      <Modal title="Phiếu xuất kho" width = '60%' visible={IsConfirmExportShow} onCancel={HandleClose} footer={false}>
-        < FormConfirmExport onCancel={HandleClose} getSelectdddedData = {getSelectedData}/>
+      <Modal title="Phiếu xuất kho" width = '80%' visible={IsConfirmExportShow} onCancel={HandleClose} footer={false}>
+        < FormConfirmExport onCancel={HandleClose} getSelectedData = {getSelectedData}  deleteData = {deleteData} />
       </Modal>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
     </>
   );

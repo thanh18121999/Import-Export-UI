@@ -1,6 +1,7 @@
-import { Card, DatePicker, Space , Divider, Avatar, Descriptions,List,Tabs,Input,Badge } from 'antd';
-import { Button } from 'antd/lib/radio';
-import { useState } from 'react';
+import { Card, DatePicker, Space, Divider, Avatar, Descriptions, List, Tabs, Input, Badge, Button } from 'antd';
+import { useState, useEffect} from 'react';
+import { DeleteOutlined } from '@ant-design/icons';
+//import TableInWarehouse from './TableInWarehouse';
 const {TextArea} = Input;
 const {TabPane} = Tabs;
 const {RangePicker} = DatePicker;
@@ -54,12 +55,14 @@ const warehouses = [
         districtcode: '5',
         wardcode: '5',
     }
-];      
+]; 
 
 const OnSelectDateChange = (e) => {
     console.log(e[0].format("MM-DD-YYYY"))
 }
 const FormConfirmExport = (props) => {
+    const {getSelectedData, onCancel, deleteData} = props;
+    const dataSelected = getSelectedData()
     const [DataCreateConfirmExport, SetdataCreateConfirmExport] = useState({
         Receipts : {
             Name : "",
@@ -78,6 +81,7 @@ const FormConfirmExport = (props) => {
             },
         });
         SetConfirmExport(null)
+        onCancel();
     }
     const OnTypingData = (e) => {
         SetdataCreateConfirmExport(prevState =>({
@@ -88,8 +92,17 @@ const FormConfirmExport = (props) => {
             }
         }))
     }
-    console.log(DataCreateConfirmExport);
+    //console.log(DataCreateConfirmExport);
     const [ConfirmExport,SetConfirmExport] = useState(null);
+
+    
+    useEffect(()=>{
+        if(dataSelected.length <= 0)
+        {
+            HandleClose()
+        }
+    },[dataSelected.length])
+
     return (
     <>
     <Space
@@ -97,11 +110,12 @@ const FormConfirmExport = (props) => {
         size="middle"
         style={{
         display: 'grid',
-        gridTemplateColumns : '1fr auto 2.2fr'
+        gridTemplateColumns : '3fr 0.5fr 5fr 3fr'
         }}
     >
         <Card style={{ height : '100%'}}>
             <Divider orientation="left">Chọn kho đến</Divider>
+            <Divider>Danh sách kho</Divider>
             <List
                 style={{height : '266px', overflow : 'auto'}}
                 itemLayout="horizontal"
@@ -136,13 +150,14 @@ const FormConfirmExport = (props) => {
                         direction="horizonal"
                         size="middle"
                         style={{
-                        display: 'flex',
+                        display: 'inline',
+                        textAlign: 'center'
                         }}
                     > 
                         {
                             ConfirmExport ? 
                             <>
-                            <Avatar
+                            <Avatar src="https://joeschmoe.io/api/v1/random"
                                 size={{ xs: 24, sm: 32, md: 70, lg: 64, xl: 80, xxl: 100 }}
                                 //icon={<AntDesignOutlined />}
                             />
@@ -167,15 +182,49 @@ const FormConfirmExport = (props) => {
                     > 
                     </Space>
                 </Card>
-            </TabPane>
+            </TabPane>  
         </Tabs>
+
+        <Card style={{ height : '100%'}}>
+            <Divider>Danh sách đơn</Divider>
+            <List
+                itemLayout='horizontal'
+                dataSource={dataSelected}
+                renderItem={(item) => (
+            <List.Item>
+                <List.Item.Meta
+                title= {item.ordercode}
+                description= {item.receiverphone}
+                />
+                <Button onClick={() => deleteData(item)} >
+                <DeleteOutlined />
+                </Button>
+            </List.Item>
+            )}        
+            />
+
+            <Space direction="horizonal"
+                size="middle"
+                style={{
+                    display: 'flex' ,
+                    justifyContent : 'flex-end',
+                    columnGap : '.8rem',
+                    marginTop: '2rem'
+                }}
+            >
+                {/* <Button onClick={HandleClose}>Huỷ bỏ</Button>
+                <Button type="primary" >Xác nhận</Button> */}
+            </Space>     
+        </Card>
+
     </Space>
     <Space direction="horizonal"
         size="middle"
         style={{
             display: 'flex' ,
             justifyContent : 'flex-end',
-            columnGap : '.8rem'
+            columnGap : '.8rem',
+            marginTop: '1rem'
         }}
     >
         <Button onClick={HandleClose}>Làm mới</Button>
