@@ -4,6 +4,7 @@ import TableInWarehouse from './components/TableInWarehouse.jsx';
 import TableWaitingForImport from './components/TableWaitingForImport.jsx';
 import TableWaitingForExport from './components/TableWaitingForExport.jsx';
 import TableDelivery from './components/TableDelivery.jsx';
+import App from './components/Test.jsx';
 
 const { TabPane } = Tabs;
 const ManageWarehouseImportExportOrder = () => {
@@ -22,6 +23,9 @@ const ManageWarehouseImportExportOrder = () => {
         </TabPane>
         <TabPane tab="Báo phát" key="3">
           <TableDelivery />
+        </TabPane>
+        <TabPane tab="Báo phát" key="4">
+          <App />
         </TabPane>
       </Tabs>
     </>

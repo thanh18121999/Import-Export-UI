@@ -212,7 +212,7 @@ console.log(data);
         dataSource={hasData ? data : []}
         scroll={{y : 700}}
       />
-      <Modal title="Phiếu xuất kho" width = '80%' visible={IsConfirmExportShow} onCancel={HandleClose}  >
+      <Modal title="Phiếu xuất kho" width = '80%' visible={IsConfirmExportShow} onCancel={HandleClose} footer={null}  >
         < FormConfirmExport onCancel={HandleClose} getSelectedData = {getSelectedData} deleteData = {deleteData} />
       </Modal>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
     </>

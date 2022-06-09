@@ -39,6 +39,7 @@ const warehouses = [
     },
     {
         id : 'cde45808-2686-47bb-b01c-75ed3d892182',
+        code: 'WH04',
         name:'Kho 4',
         location : 'Quận 4, Hồ Chí Minh',
         countrycode: '4',
@@ -48,6 +49,7 @@ const warehouses = [
     },
     {
         id : 'f76b0ffb-049b-4e54-9ffc-99680bed536a',
+        code: 'WH05',
         name:'Kho 5',
         location : 'Quận 5, Hồ Chí Minh',
         countrycode: '5',
@@ -139,55 +141,77 @@ const warehouses = [
 //     }
 //   ];  
 
-const OnSelectDateChange = (e) => {
-    console.log(e[0].format("MM-DD-YYYY"))
-}
-const FormConfirmExport = (props) => {
+
+const FormChosenWareHouse = (props) => {
     const {getSelectedData, deleteData, onCancel} = props;
     const dataSelected = getSelectedData();
-    const [DataCreateConfirmExport, SetdataCreateConfirmExport] = useState({
-        Receipts : {
+    const [DataCreateTranferExport, SetdataCreateTranferExport] = useState(
+    {
+        ImportList : {
             Name : "",
             Description : "",
-            RangeDate : "",
-            Type : "CONFIRMEXPORTRECEIPT" ,
+            Import_To : "",
+            Export_Date: "",
         },
-    })   
+        IDOrderShippings : dataSelected.map(x=>x.ID)
+    }
+    )   
+    console.log(DataCreateTranferExport)
     const HandleClose = () => {
-        SetdataCreateConfirmExport({
-            Receipts : {
-            Name : "",
-            Description : "",
-            RangeDate : "",
-            Type : "CONFIRMEXPORTRECEIPT" ,
-            },
-        });
-        SetConfirmExport(null)
+        // SetdataCreateChosenWareHouse({
+        //     Receipts : {
+        //     Name : "",
+        //     Description : "",
+        //     RangeDate : "",
+        //     Type : "ChosenWareHouseRECEIPT" ,
+        //     },
+        // });
+        // SetChosenWareHouse(null)
     }
     // const RefeshHandleClose = () => {
-    //     SetdataCreateConfirmExport({
+    //     SetdataCreateChosenWareHouse({
     //         Receipts : {
     //         Name : "",
     //         Description : "",
     //         RangeDate : "",
-    //         Type : "CONFIRMEXPORTRECEIPT" ,
+    //         Type : "ChosenWareHouseRECEIPT" ,
     //         },
     //     });
-    //     SetConfirmExport(null)
+    //     SetChosenWareHouse(null)
     //     // onCancel();
     // }
     const OnTypingData = (e) => {
-        SetdataCreateConfirmExport(prevState =>({
+
+        SetdataCreateTranferExport(prevState =>({
             ...prevState,
-            Receipts : {
-                ...prevState.Receipts,
+            ImportList : {
+                ...prevState.ImportList,
                 [e.target.name] : e.target.value
             }
         }))
     }
-    console.log(DataCreateConfirmExport);
-    const [ConfirmExport,SetConfirmExport] = useState(null);
-
+    const OnSelectDateChange = (e) => {
+        // console.log(e.format("MM-DD-YYYY"))
+        SetdataCreateTranferExport(prevState =>({
+            ...prevState,
+            ImportList : {
+                ...prevState.ImportList,
+                Export_Date : e.format("MM-DD-YYYY")
+            }
+        }))
+    }
+    // console.log(DataCreateChosenWareHouse);
+    const [ChosenWareHouse,SetChosenWareHouse] = useState(null);
+    const HandleChosenWareHouse = (e) => {
+        SetChosenWareHouse(e)
+        SetdataCreateTranferExport(prevState =>({
+            ...prevState,
+            ImportList : {
+                ...prevState.ImportList,
+                Import_To : e.code
+            }
+        }))
+    }
     // Khi data null thi close Modal
     useEffect(()=>{
         if(dataSelected.length <= 0)
@@ -215,7 +239,7 @@ const FormConfirmExport = (props) => {
                 itemLayout="horizontal"
                 dataSource={warehouses}
                 renderItem={(warehouses) => (
-                    <List.Item onClick={()=> SetConfirmExport(warehouses)} style={{cursor: "pointer", backgroundColor : ConfirmExport  && warehouses.id === ConfirmExport.id ? '#e6f7ff' : null}} >
+                    <List.Item onClick={()=> HandleChosenWareHouse(warehouses)} style={{cursor: "pointer", backgroundColor : ChosenWareHouse  && warehouses.id === ChosenWareHouse.id ? '#e6f7ff' : null}} >
                         <List.Item.Meta
                         avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
                         title={<a href="https://ant.design">{warehouses.name}</a>}
@@ -230,15 +254,15 @@ const FormConfirmExport = (props) => {
             <TabPane tab="Thông tin phiếu xuất kho" key="1">
             <Space direction="vertical">
                 <Space direction="horizonal">
-                    <Input value = {DataCreateConfirmExport.Receipts.Name} name='Name' addonBefore="Tên phiếu: " onChange={OnTypingData}  />
-                    <Input value = {ConfirmExport ? ConfirmExport.name : ""} name='Name' addonBefore="Kho đến: "  />
+                    <Input value = {DataCreateTranferExport.ImportList.Name} name='Name' addonBefore="Tên phiếu: " onChange={OnTypingData}  />
+                    <Input readOnly value = {ChosenWareHouse ? ChosenWareHouse.code : ""} name='Import_To' addonBefore="Kho đến: " onChange={OnTypingData} />
                 </Space>
-                    <DatePicker onChange={OnSelectDateChange} style={{width : '50%'}} placeholder="Chọn ngày xuất"/>
+                    <DatePicker name= 'Export_Date' onChange={OnSelectDateChange} style={{width : '50%'}} placeholder="Chọn ngày xuất"/>
                 <Divider orientation="left">Mô tả</Divider>
-                <TextArea value = {DataCreateConfirmExport.Receipts.Description} name='Description' rows={5} placeholder="Description" onChange={OnTypingData} />
+                <TextArea value = {DataCreateTranferExport.ImportList.Description} name='Description' rows={5} placeholder="Description" onChange={OnTypingData} />
             </Space>
             </TabPane>
-            <TabPane tab = {<Badge style={{marginTop : '-5px'}} count={ConfirmExport ? ConfirmExport.name : ""} color="cyan">Thông tin kho xuất tới</Badge>} key="2">
+            <TabPane tab = {<Badge style={{marginTop : '-5px'}} count={ChosenWareHouse ? ChosenWareHouse.name : ""} color="cyan">Thông tin kho xuất tới</Badge>} key="2">
                 <Card size="middle">
                     <Space
                         direction="horizonal"
@@ -248,7 +272,7 @@ const FormConfirmExport = (props) => {
                         }}
                     > 
                         {
-                            ConfirmExport ? 
+                            ChosenWareHouse ? 
                             <>
                             <div style={{display: 'flex', justifyContent : 'center',}}>
                                 <Avatar src="https://joeschmoe.io/api/v1/random"
@@ -258,12 +282,12 @@ const FormConfirmExport = (props) => {
                             </div>
                             <Divider type="horizonal" style={{height : '100%'}}/>
                             <Descriptions  column={4}>
-                                <Descriptions.Item  span={4} label="Tên">{ConfirmExport.name ? ConfirmExport.name  : "Empty"}</Descriptions.Item>
-                                <Descriptions.Item  span={4} label="Vị trí">{ConfirmExport.location ?  ConfirmExport.location : "Empty" }</Descriptions.Item>
-                                <Descriptions.Item  span={2} label="Mã quốc gia">{ConfirmExport.countrycode ? ConfirmExport.countrycode : "Empty"}</Descriptions.Item>
-                                <Descriptions.Item  span={2} label="Mã tỉnh">{ConfirmExport.provincecode ? ConfirmExport.provincecode  : "Empty"}</Descriptions.Item>
-                                <Descriptions.Item  span={2} label="Mã quận">{ConfirmExport.districtcode ? ConfirmExport.districtcode  : "Empty"}</Descriptions.Item>
-                                <Descriptions.Item  span={2} label="Mã phường">{ConfirmExport.wardcode ? ConfirmExport.wardcode  : "Empty"}</Descriptions.Item>
+                                <Descriptions.Item  span={4} label="Tên">{ChosenWareHouse.name ? ChosenWareHouse.name  : "Empty"}</Descriptions.Item>
+                                <Descriptions.Item  span={4} label="Vị trí">{ChosenWareHouse.location ?  ChosenWareHouse.location : "Empty" }</Descriptions.Item>
+                                <Descriptions.Item  span={2} label="Mã quốc gia">{ChosenWareHouse.countrycode ? ChosenWareHouse.countrycode : "Empty"}</Descriptions.Item>
+                                <Descriptions.Item  span={2} label="Mã tỉnh">{ChosenWareHouse.provincecode ? ChosenWareHouse.provincecode  : "Empty"}</Descriptions.Item>
+                                <Descriptions.Item  span={2} label="Mã quận">{ChosenWareHouse.districtcode ? ChosenWareHouse.districtcode  : "Empty"}</Descriptions.Item>
+                                <Descriptions.Item  span={2} label="Mã phường">{ChosenWareHouse.wardcode ? ChosenWareHouse.wardcode  : "Empty"}</Descriptions.Item>
                             </Descriptions> </>
                             : null
                         }
@@ -313,10 +337,10 @@ const FormConfirmExport = (props) => {
         }}
     >
         <Button onClick={()=>{HandleClose(); }}>Làm mới</Button>
-        <Button >Xuất kho</Button>
+        <Button onClick={()=>{}}>Xuất kho</Button>
     </Space>
     </>
     );
 }
 
-export default FormConfirmExport;
+export default FormChosenWareHouse;
