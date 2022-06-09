@@ -1,50 +1,8 @@
-import { Space, Modal, Table, Button, message, Tag } from 'antd';
+import { Space, Modal, Table, Tag, Select, DatePicker, Button } from 'antd';
 import { useState, useEffect } from 'react';
-import FormConfirmImport from './FormConfirmImport';
-
-const columns = [
-  {
-    title: 'Mã phiếu',
-    dataIndex: 'id',
-    width : '20%',
-    render: (text) => <a>{text}</a>
-  },
-  {
-    title: 'Tên phiếu',
-    dataIndex: 'name',
-    width : 'auto',
-  },
-  {
-    title: 'Mô tả',
-    dataIndex: 'description',
-    width : 'auto',
-  },
-  {
-    title: 'Ngày tạo',
-    dataIndex: 'createdDate',
-    width : 'auto',
-  },
-  {
-    title: 'Người tạo',
-    dataIndex: 'createdUser',
-    width : 'auto',
-  },
-  {
-    title: 'Trạng thái',
-    dataIndex: 'status',
-    width : 'auto',
-  },
-  {
-    title: 'Chi tiết phiếu nhập',
-    key: 'action',
-    width : 'auto',
-    render: () => (
-        <Tag color={"green"}>
-           XEM CHI TIẾT
-        </Tag>
-    )
-  },
-];
+import FormConfirm from './XacNhanPhieu';
+import FormConfirmTransfer from './XacNhanToi';
+import FormConfirmImport from './XacNhanNhapKho';
 
 const importLists = [
   {
@@ -194,19 +152,81 @@ const orders = [
 
 
 const TableWaitingForImport = () => {
-    const [data,setData] = useState([]);
-    const [SelectedData, setSelectedData] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [hasData, setHasData] = useState(true);
+  const [data,setData] = useState([]);
+  const [SelectedData, setSelectedData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [hasData, setHasData] = useState(true);
+  const { Option } = Select;
+  const { RangePicker } = DatePicker;
 
-    const HandleSetSelectedData = (e)=>{
-      setSelectedData(e)
-    }
+  const columns = [
+      {
+        title: 'Mã phiếu',
+        dataIndex: 'id',
+        width : '20%',
+        render: (text) => <a>{text}</a>
+      },
+      {
+        title: 'Tên phiếu',
+        dataIndex: 'name',
+        width : 'auto',
+      },
+      {
+        title: 'Mô tả',
+        dataIndex: 'description',
+        width : 'auto',
+      },
+      {
+        title: 'Ngày tạo',
+        dataIndex: 'createdDate',
+        width : 'auto',
+      },
+      {
+        title: 'Người tạo',
+        dataIndex: 'createdUser',
+        width : 'auto',
+      },
+      {
+        title: 'Trạng thái',
+        dataIndex: 'status',
+        width : 'auto',
+      },
+      // {
+      //   title: 'Chi tiết phiếu nhập',
+      //   key: 'action',
+      //   width : 'auto',
+      //   render: (_,record) => (
+      //       <Tag color={"green"} onClick={()=>ShowConfirmForm(record)}>
+      //          XEM CHI TIẾT
+      //       </Tag>
+      //   )
+      // },
+  ];
+
+  const HandleSetSelectedData = (e)=>{
+    setSelectedData(e)
+  }
 
   const defaultTitle = () => 
-    <Space direction="horizonal" style={{display : 'flex', justifyContent : 'space-between', padding : '.8rem', fontWeight : 'bold',}}>
-      <p>Kho: </p>
-      <Button onClick={ShowConfirmImportForm} hidden={!SelectedData.length} type="primary">Nhập kho</Button>
+    <Space direction="horizonal" style={{display : 'flex', justifyContent: 'flex-start', padding : '.8rem', fontWeight : 'bold',}}>
+      <p style={{marginRight: '6rem'}}>Kho: </p>
+      <Select
+        defaultValue="Chờ xác nhận"
+        style={{
+          width: 130,
+          marginRight: '6rem'
+        }}
+      >
+        <Option value="Chờ xác nhận">Chờ xác nhận</Option>
+        <Option value="Đang xử lý">Đang xử lý</Option>
+        <Option value="Chờ nhập">Chờ nhập</Option>
+      </Select>
+      <RangePicker
+        format="DD-MM-YYYY"
+      />
+      <Button onClick={ShowConfirmForm} hidden={!SelectedData.length} type="primary">Xác nhận</Button>
+      <Button onClick={ShowConfirmTransferForm} hidden={!SelectedData.length} type="primary">Xác nhận tới</Button>
+      <Button onClick={ShowConfirmImportForm} hidden={!SelectedData.length} type="primary">Xác nhận nhập kho</Button>
     </Space>;
   
   const tableColumns = columns.map((item) => ({ ...item, ellipsis : true }));
@@ -221,17 +241,29 @@ const TableWaitingForImport = () => {
     },
     tableLayout : 'unset' ,
   };
+  const [IsConfirmFormShow, setIsConfirmFormShow] = useState(false);
+  const [IsConfirmTransferFormShow, setIsConfirmTransferFormShow] = useState(false);
   const [IsConfirmImportFormShow, setIsConfirmImportFormShow] = useState(false);
 
+  const ShowConfirmForm = () => {
+    setIsConfirmFormShow(true);
+  };
+  const ShowConfirmTransferForm = () => {
+    setIsConfirmTransferFormShow(true);
+  };
   const ShowConfirmImportForm = () => {
     setIsConfirmImportFormShow(true);
   };
+  
   const HandleClose = () => {
+    setIsConfirmFormShow(false);
     setIsConfirmImportFormShow(false);
+    setIsConfirmTransferFormShow(false);
   };
   const  getSelectedData = () =>{
     return SelectedData;
   }
+  
   return (
     <>
       <Table
@@ -243,8 +275,14 @@ const TableWaitingForImport = () => {
         dataSource={hasData ? importLists : []}
         scroll={{y : 700}}
       />
-      <Modal title="Phiếu nhập kho" width = '100%' visible={IsConfirmImportFormShow} onCancel={HandleClose} footer={false}>
-        < FormConfirmImport onCancel={HandleClose} getSelectdddedData = {getSelectedData}/>
+      <Modal title="Xác nhận phiếu" width = '100%' visible={IsConfirmFormShow} onCancel={HandleClose} footer={false}>
+        < FormConfirm onCancel={HandleClose} getSelectedData = {getSelectedData}/>
+      </Modal> 
+      <Modal title="Xác nhận điều chuyển tới" width = '100%' visible={IsConfirmTransferFormShow} onCancel={HandleClose} footer={false}>
+        < FormConfirmTransfer onCancel={HandleClose} getSelectedData = {getSelectedData}/>
+      </Modal> 
+      <Modal title="Xác nhận nhập kho" width = '100%' visible={IsConfirmImportFormShow} onCancel={HandleClose} footer={false}>
+        < FormConfirmImport onCancel={HandleClose} getSelectedData = {getSelectedData}/>
       </Modal> 
     </>
   );

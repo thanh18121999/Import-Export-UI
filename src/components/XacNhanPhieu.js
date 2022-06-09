@@ -1,4 +1,4 @@
-import { Space, Tag, Input, Table, DatePicker,Card, message } from 'antd';
+import { Space, Tag, Input, Table, DatePicker, Card, Popconfirm, message } from 'antd';
 import { Button } from 'antd/lib/radio';
 import { useState } from 'react';
 
@@ -128,35 +128,12 @@ const orders = [
     }
 ];
 
-const FormConfirmImport = () => {
+const FormConfirm = () => {
 
     const dateFormat = 'DD/MM/YYYY';
-    const [SelectedData, setSelectedData] = useState([]);
-    const [loading, setLoading] = useState(false);
     const [data, setData] = useState(orders);
-    const [chosenData, setChosenData] = useState([])
-    const chooseOrder = (e)=>{
-        const temp = [...data]
-        const chosenItem = temp.find((item)=> item.id === e.id)
-        setChosenData([...chosenData,chosenItem])
-        const idx = temp.findIndex((item)=> item.id === e.id)
-        const temp1 = [...data]
-        temp1.splice(idx,1) 
-        setData(temp1)
-    }
-    const unChooseOrder = (e)=>{
-        const temp = [...chosenData]
-        const chosenItem = temp.find((item)=> item.id === e.id)
-        setData([...data,chosenItem])
-        const idx = temp.findIndex((item)=> item.id === e.id)
-        const temp1 = [...chosenData]
-        temp1.splice(idx,1) 
-        setChosenData(temp1)
-    }
+    const [visible, setVisible] = useState(false);
 
-    const HandleSetSelectedData = (e)=>{
-        setSelectedData(e)
-    }
     // table
 
     const listOrderColumns = [
@@ -181,70 +158,28 @@ const FormConfirmImport = () => {
           dataIndex: 'weight',
           width : '20%',
         },
-        {
-          key: 'action',
-          width : 'auto',
-          render: (_,record) => (
-              <Tag color={"green"} onClick={()=>chooseOrder(record)}>
-                 Chọn
-              </Tag>
-          )
-        },
-    ];
-    const chosenColumns = [
-        {
-          title: 'Mã đơn',
-          dataIndex: 'ordercode',
-          width : '20%',
-          render: (text) => <a>{text}</a>
-        },
-        {
-          title: 'Địa chỉ gửi',
-          dataIndex: 'senderaddress',
-          width : '20%',
-        },
-        {
-          title: 'Địa chỉ nhận',
-          dataIndex: 'receiveraddress',
-          width : '20%',
-        },
-        {
-          title: 'Khối lượng',
-          dataIndex: 'weight',
-          width : '20%',
-        },
-        {
-          key: 'action',
-          width : 'auto',
-          render: (_,record) => (
-              <Tag color={"red"} onClick={()=>unChooseOrder(record)}>
-                 Xóa
-              </Tag>
-          )
-        },
     ];
     // end table
     const listOrderColumn = listOrderColumns.map((item) => ({ ...item, ellipsis : true }));
-    const chosenColumn = chosenColumns.map((item) => ({ ...item, ellipsis : true }));
     const listOrderProps = {
     bordered : true,
     pagination : false,
-    loading,
     size : 'middle',
     showHeader : true,
-    rowSelection : {
-        onChange : (e) => HandleSetSelectedData(e) 
-    },
     tableLayout : 'unset' ,
     };
-    const chosenProps = {
-        bordered : true,
-        pagination : false,
-        loading,
-        size : 'middle',
-        showHeader : true,
-        tableLayout : 'unset' ,
-        };
+
+    const showPopconfirm = () => {
+        setVisible(true);
+    };
+    const confirm = (e) => {
+        message.success('Success');
+        setVisible(false);
+    };
+    const cancel = (e) => {
+        message.error('Error');
+        setVisible(false);
+    };
 
     return (
     <>
@@ -257,6 +192,7 @@ const FormConfirmImport = () => {
     >
             <Space direction="vertical">
                 <Space direction="horizontal">
+                    <Input name='Name' addonBefore="Mã phiếu " />
                     <Input name='Name' addonBefore="Tên phiếu " />
                     <DatePicker
                         format={dateFormat}
@@ -282,30 +218,25 @@ const FormConfirmImport = () => {
             >
             </Table>
         </Card>
-        <Card>
-            Danh sách đơn hàng chọn lưu kho
-            <Table
-                {...chosenProps}
-                columns={chosenColumn}
-                dataSource={chosenData}
-                scroll={{y : 700}}
-            >
-            </Table>
-        </Card>
     </Space>
-    <Space direction="horizontal"
-        size="middle"
-        style={{
-            display: 'flex' ,
-            justifyContent : 'flex-end',
-            columnGap : '.8rem'
-        }}
-    > 
-        <Button type="primary" >Làm mới</Button>
-        <Button type="primary" >Xác nhận nhập kho</Button>
-    </Space>
+
+
+    <Popconfirm
+        title="Xác nhận phiếu nhập kho được chọn?"
+        onConfirm={confirm}
+        onCancel={cancel}
+        okText="Xác nhận"
+        cancelText="Hủy"
+        visible={visible}
+    >
+        <Button 
+            onClick={showPopconfirm}
+            type="primary" 
+        >Xác nhận phiếu</Button>
+        
+    </Popconfirm>
     </>
     );
 }
 
-export default FormConfirmImport;
+export default FormConfirm;

@@ -10,13 +10,13 @@ const ManageWarehouseImportExportOrder = () => {
   return (
     <>
       <Tabs tabPosition='left'>
-        <TabPane tab="Chờ nhập kho" key="0">
+        <TabPane tab="Quản lý nhập kho" key="0">
           <TableWaitingForImport />
         </TabPane>
-        <TabPane tab="Đang lưu kho" key="1">
+        <TabPane tab="Quản lý đơn lưu kho" key="1">
           <TableInWarehouse />
         </TabPane>
-        <TabPane tab="Chờ xuất kho" key="2">
+        <TabPane tab="Quản lý xuất kho" key="2">
           <TableWaitingForExport />
         </TabPane>
       </Tabs>
