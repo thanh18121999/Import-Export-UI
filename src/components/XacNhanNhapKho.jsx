@@ -1,4 +1,4 @@
-import { Space, Tag, Input, Table, DatePicker,Card, Popconfirm, Dropdown, message, Menu } from 'antd';
+import { Space, Tag, Input, Table, DatePicker, Badge, Popconfirm, Dropdown, message, Menu, Tabs } from 'antd';
 import { Button } from 'antd/lib/radio';
 import { useState } from 'react';
 
@@ -131,14 +131,17 @@ const orders = [
 const FormConfirmImport = () => {
 
     const dateFormat = 'DD/MM/YYYY';
+    const {TabPane} = Tabs;
     const [SelectedData, setSelectedData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState(orders);
     const [chosenData, setChosenData] = useState([])
     const [dropData, setDropData] = useState([])
     const [visible, setVisible] = useState(false);
+    const [activeTab, setActiveTab] = useState("1");
 
     const chooseOrder = (e)=>{
+        setActiveTab("1")
         const temp = [...data]
         const chosenItem = temp.find((item)=> item.id === e.id)
         setChosenData([...chosenData,chosenItem])
@@ -147,6 +150,7 @@ const FormConfirmImport = () => {
         temp1.splice(idx,1) 
         setData(temp1)
     }
+    console.log(chosenData.length)
     const unChooseOrder = (e)=>{
         const temp = [...chosenData]
         const chosenItem = temp.find((item)=> item.id === e.id)
@@ -157,6 +161,7 @@ const FormConfirmImport = () => {
         setChosenData(temp1)
     }
     const dropOrder = (e)=>{
+        setActiveTab("2")
         const temp = [...data]
         const dropItem = temp.find((item)=> item.id === e.id)
         setDropData([...dropData,dropItem])
@@ -316,7 +321,10 @@ const FormConfirmImport = () => {
     const listOrderColumn = listOrderColumns.map((item) => ({ ...item, ellipsis : true }));
     const chosenColumn = chosenColumns.map((item) => ({ ...item, ellipsis : true }));
     const dropColumn = dropColumns.map((item) => ({ ...item, ellipsis : true }));
+    const defaultTitle = () => <p>Danh sách đơn hàng trong kho</p>
+                                   
     const listOrderProps = {
+    title:  defaultTitle,
     bordered : true,
     pagination : false,
     loading,
@@ -375,8 +383,7 @@ const FormConfirmImport = () => {
             display: 'flex',
         }}
     >
-        <Card>
-            Danh sách đơn hàng trong phiếu
+        <Space>
             <Table
                 {...listOrderProps}
                 columns={listOrderColumn}
@@ -384,16 +391,9 @@ const FormConfirmImport = () => {
                 scroll={{y : 700}}
             >
             </Table>
-        </Card>
-    </Space>
-    <Space
-        direction="horizontal"
-        size="middle"
-        style={{
-            display: 'flex',
-        }}
-    >
-        <Card>
+        </Space>
+        <Tabs activeKey={activeTab} onChange={(e)=> setActiveTab(e)} >
+        <TabPane tab={<Badge style={{marginTop : '-2px'}} count={chosenData.length} color="cyan">Danh sách đơn hàng chọn lưu kho</Badge>} key="1">
             Danh sách đơn hàng chọn lưu kho
             <Table
                 {...chosenProps}
@@ -402,8 +402,8 @@ const FormConfirmImport = () => {
                 scroll={{y : 700}}
             >
             </Table>
-        </Card>
-        <Card>
+        </TabPane>
+        <TabPane tab={<Badge style={{marginTop : '-2px'}} count={dropData.length} color="cyan">Danh sách đơn hàng chọn lưu kho</Badge>} key="2">
             Danh sách đơn hàng chênh lệch
             <Table
                 {...chosenProps}
@@ -412,7 +412,8 @@ const FormConfirmImport = () => {
                 scroll={{y : 700}}
             >
             </Table>
-        </Card>
+        </TabPane>
+        </Tabs>
     </Space>
     <Popconfirm
         title="Xác nhận nhập kho các đơn hàng được chọn?"
