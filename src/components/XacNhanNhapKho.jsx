@@ -1,6 +1,7 @@
-import { Space, Tag, Input, Table, DatePicker, Badge, Popconfirm, Dropdown, message, Menu, Tabs } from 'antd';
+import { Space, Tag, Input, Table, DatePicker, Badge, Dropdown, Menu, Tabs } from 'antd';
 import { Button } from 'antd/lib/radio';
 import { useState } from 'react';
+import {MenuOutlined } from '@ant-design/icons';
 
 const orders = [
     {
@@ -137,7 +138,6 @@ const FormConfirmImport = () => {
     const [data, setData] = useState(orders);
     const [chosenData, setChosenData] = useState([])
     const [dropData, setDropData] = useState([])
-    const [visible, setVisible] = useState(false);
     const [activeTab, setActiveTab] = useState("1");
 
     const chooseOrder = (e)=>{
@@ -238,9 +238,7 @@ const FormConfirmImport = () => {
           width : 'auto',
           render: (text,record) => 
             <Dropdown overlay ={menu(record)}>
-                <a>
-                    Chọn hành động
-                </a>
+                <MenuOutlined style={{color: 'blue'}}></MenuOutlined>
             </Dropdown>
           
         },
@@ -344,18 +342,6 @@ const FormConfirmImport = () => {
         tableLayout : 'unset' ,
     };
 
-    const showPopconfirm = () => {
-        setVisible(true);
-    };
-    const confirm = (e) => {
-        message.success('Success');
-        setVisible(false);
-    };
-    const cancel = (e) => {
-        message.error('Error');
-        setVisible(false);
-    };
-
     return (
     <>
     <Space
@@ -415,20 +401,13 @@ const FormConfirmImport = () => {
         </TabPane>
         </Tabs>
     </Space>
-    <Popconfirm
-        title="Xác nhận nhập kho các đơn hàng được chọn?"
-        onConfirm={confirm}
-        onCancel={cancel}
-        okText="Xác nhận"
-        cancelText="Hủy"
-        visible={visible}
-    >
+    <Space>
         <Button 
-            onClick={showPopconfirm}
+            hidden={true}
             type="primary" 
-        >Xác nhận nhập kho</Button>
-        
-    </Popconfirm>
+        >Xác nhận nhập kho
+        </Button>
+    </Space>   
     </>
     );
 }

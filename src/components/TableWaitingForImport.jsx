@@ -12,7 +12,7 @@ const importLists = [
     "description": "Phiếu thu được tạo ngày 30-5",
     "createdDate": "30-05-2022",
     "createdUser": "Thắng xe ôm",
-    "status": "In Warehouse ",
+    "status": "IMPORT_ON_PROCESS",
   },
   {
     "key": "4fbe3948-d943-45b9-a95b-580c52e54d01",
@@ -21,7 +21,34 @@ const importLists = [
     "description": "Phiếu thu 2 được tạo ngày 30-5",
     "createdDate": "30-05-2022",
     "createdUser": "Thắng xe ôm",
-    "status": "In Warehouse ",
+    "status": "IMPORT_ON_PROCESS",
+  },
+  {
+    "key": "4fbe3948-d943-45b9-a95b-580c52e54d02",
+    "id": "4fbe3948-d943-45b9-a95b-580c52e54d02",
+    "name": "Phiếu 3",
+    "description": "Phiếu thu 3",
+    "createdDate": "30-05-2022",
+    "createdUser": "Fhuc Boiz",
+    "status": "IMPORT_WAITING",
+  },
+  {
+    "key": "4fbe3948-d943-45b9-a95b-580c52e54d03",
+    "id": "4fbe3948-d943-45b9-a95b-580c52e54d03",
+    "name": "Phiếu 4",
+    "description": "Phiếu 4",
+    "createdDate": "30-05-2022",
+    "createdUser": "Fhuc Boiz",
+    "status": "IMPORT_WAITING",
+  },
+  {
+    "key": "4fbe3948-d943-45b9-a95b-580c52e54d04",
+    "id": "4fbe3948-d943-45b9-a95b-580c52e54d04",
+    "name": "Phiếu 5",
+    "description": "Phiếu 5",
+    "createdDate": "30-05-2022",
+    "createdUser": "Fhuc Boiz",
+    "status": "IMPORT_WAITING",
   },
 ];
 const orders = [
@@ -262,8 +289,8 @@ const TableWaitingForImport = () => {
   };
   const  getSelectedData = () =>{
     return SelectedData;
-  }
-  
+  };
+
   return (
     <>
       <Table
