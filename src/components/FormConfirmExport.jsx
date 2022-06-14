@@ -1,218 +1,100 @@
-import { Card, DatePicker, Space , Divider, Avatar, Descriptions,List,Tabs,Input,Badge,Button } from 'antd';
+import { Card, DatePicker, Space , Divider, Avatar, Descriptions,List,Tabs,Input,Badge,Button,Tag,Skeleton,Alert,Tooltip,message } from 'antd';
 // import { Button } from 'antd/lib/radio';
 import { useState,useEffect } from 'react';
-import {CloseOutlined} from '@ant-design/icons';
+import {CloseOutlined ,HomeFilled,ContainerFilled} from '@ant-design/icons';
 const {TextArea} = Input;
 const {TabPane} = Tabs;
 const {RangePicker} = DatePicker;
-
-const warehouses = [
-    {
-        id : '717bac81-c67a-4abc-8bf5-aa0b8664b117',
-        code: 'WH01',
-        name:'Kho 1',
-        location : 'Quận 1, Hồ Chí Minh',
-        countrycode: '1',
-        provincecode: '1',
-        districtcode: '1',
-        wardcode: '1',
-    },
-    {
-        id : '6206afb7-f3b0-4ec5-840e-2a535c04ecce',
-        code: 'WH02',
-        name:'Kho 2',
-        location : 'Quận 2, Hồ Chí Minh',
-        countrycode: '2',
-        provincecode: '2',
-        districtcode: '2',
-        wardcode: '2',
-    },
-    {
-        id : '0a30b5fb-1c75-4e87-8e73-a39c1d17ba21',
-        code: 'WH03',
-        name:'Kho 3',
-        location : 'Quận 3, Hồ Chí Minh',
-        countrycode: '3',
-        provincecode: '3',
-        districtcode: '3',
-        wardcode: '3',
-    },
-    {
-        id : 'cde45808-2686-47bb-b01c-75ed3d892182',
-        code: 'WH04',
-        name:'Kho 4',
-        location : 'Quận 4, Hồ Chí Minh',
-        countrycode: '4',
-        provincecode: '4',
-        districtcode: '4',
-        wardcode: '4',
-    },
-    {
-        id : 'f76b0ffb-049b-4e54-9ffc-99680bed536a',
-        code: 'WH05',
-        name:'Kho 5',
-        location : 'Quận 5, Hồ Chí Minh',
-        countrycode: '5',
-        provincecode: '5',
-        districtcode: '5',
-        wardcode: '5',
-    }
-];
-// const orders = [
-//     {
-//         "key": "4fbe3948-d943-45b9-a95b-580c52e54d00",
-//         "id": "4fbe3948-d943-45b9-a95b-580c52e54d00",
-//         "shipno": "IUTTGVET1",
-//         "dropofftype": "1",
-//         "servicetype": "1",
-//         "ordercode": "IUTTGVET",
-//         "shippingchargespayment": "Sender",
-//         "deliverystatus": "PICKUP_WAITING",
-//         "timeregister": "5/19/2022 3:45:51 PM",
-//         "sendername": "Thành vip pro",
-//         "senderphone": "0123456789",
-//         "senderaddress": "thu duc, vn",
-//         "sendercountrycode": "VN",
-//         "sendercitycode": "VN-SG",
-//         "senderdistrictcode": "71010",
-//         "senderwardcode": "71020",
-//         "senderpostalcode": "71000",
-//         "receivername": "test3",
-//         "receiverphone": "0987654321",
-//         "receiveraddress": "hanoi, vn",
-//         "receivercountrycode": "VN",
-//         "receivercitycode": "VN-HN",
-//         "receiverdistrictcode": "Cầu Giấy",
-//         "receiverwardcode": "1",
-//         "receiverpostalcode": "100000",
-//         "totalpackages": 2,
-//         "servicepostage": 1,
-//         "addedpostage": 1,
-//         "codpostage": 1,
-//         "surcharge": 1,
-//         "totalpostage": 1,
-//         "vat": 1,
-//         "weight": 12,
-//         "cod": 300,
-//         "currency": "VND",
-//         "content": null,
-//         "note": null,
-//         "warehouse": "WH01"
-//     },
-//     {
-//         "key": "47fb9e2a-840f-4444-b730-24ddb31cddca",
-//         "id": "47fb9e2a-840f-4444-b730-24ddb31cddca",
-//         "shipno": "EGDUIEEH1",
-//         "dropofftype": "1",
-//         "servicetype": "1",
-//         "ordercode": "EGDUIEEH",
-//         "shippingchargespayment": "Sender",
-//         "deliverystatus": "PICKUP_WAITING",
-//         "timeregister": "5/19/2022 4:15:14 PM",
-//         "sendername": "Thắng ",
-//         "senderphone": "0747852369",
-//         "senderaddress": "01/01",
-//         "sendercountrycode": "VN",
-//         "sendercitycode": "VN-SG",
-//         "senderdistrictcode": "71010",
-//         "senderwardcode": "P3",
-//         "senderpostalcode": "700000",
-//         "receivername": "Thành ",
-//         "receiverphone": "0926985147",
-//         "receiveraddress": "02/01",
-//         "receivercountrycode": "VN",
-//         "receivercitycode": "VN-HN",
-//         "receiverdistrictcode": "Cầu Giấy",
-//         "receiverwardcode": "P3",
-//         "receiverpostalcode": "100000",
-//         "totalpackages": 1,
-//         "servicepostage": 1,
-//         "addedpostage": 1,
-//         "codpostage": 1,
-//         "surcharge": 1,
-//         "totalpostage": 1,
-//         "vat": 1,
-//         "weight": 65,
-//         "cod": 10,
-//         "currency": "VND",
-//         "content": null,
-//         "note": null,
-//         "warehouse": "WH01"
-//     }
-//   ];  
-
+import {getWarehouseList , createExportTranferList} from '../Service';
 
 const FormChosenWareHouse = (props) => {
-    const {getSelectedData, deleteData, onCancel} = props;
+    const {getSelectedData, deleteData, onCancel, resetData} = props;
     const dataSelected = getSelectedData();
-    const [DataCreateTranferExport, SetdataCreateTranferExport] = useState(
-    {
-        ImportList : {
+    const [Warehouses,SetWarehouses] = useState([]);
+    const [DataCreateValidation,SetDataCreateValidation] = useState({
+        Name : "",
+        Description : "",
+        Import_To : "",
+        Export_Date : ""
+    })
+    const [DataCreateTranferExport, SetdataCreateTranferExport] = useState({
+        ImexportList : {
             Name : "",
             Description : "",
             Import_To : "",
             Export_Date: "",
         },
         IDOrderShippings : dataSelected.map(x=>x.ID)
+    })
+    const [ChosenWareHouse,SetChosenWareHouse] = useState(null);
+    async function fetchWarehouseList(){
+        var res = await getWarehouseList();
+        if (res){
+            SetWarehouses(res.RESPONSES)
+        }
     }
-    )   
-    console.log(DataCreateTranferExport)
+    useEffect(()=> {
+        fetchWarehouseList();
+    },[])
     const HandleClose = () => {
-        // SetdataCreateChosenWareHouse({
-        //     Receipts : {
-        //     Name : "",
-        //     Description : "",
-        //     RangeDate : "",
-        //     Type : "ChosenWareHouseRECEIPT" ,
-        //     },
-        // });
-        // SetChosenWareHouse(null)
+        SetDataCreateValidation({
+            Name : "",
+            Description : "",
+            Import_To : "",
+            Export_Date : ""
+        })
+        SetdataCreateTranferExport({
+            ImexportList : {
+                Name : "",
+                Description : "",
+                Import_To : "",
+                Export_Date: "",
+            },
+            IDOrderShippings : dataSelected.map(x=>x.ID)
+        });
+        SetChosenWareHouse(null)
+        onCancel();
     }
-    // const RefeshHandleClose = () => {
-    //     SetdataCreateChosenWareHouse({
-    //         Receipts : {
-    //         Name : "",
-    //         Description : "",
-    //         RangeDate : "",
-    //         Type : "ChosenWareHouseRECEIPT" ,
-    //         },
-    //     });
-    //     SetChosenWareHouse(null)
-    //     // onCancel();
-    // }
     const OnTypingData = (e) => {
-
+        SetDataCreateValidation(prevState => ({
+            ...prevState,
+            [e.target.name] : ""
+        }))
         SetdataCreateTranferExport(prevState =>({
             ...prevState,
-            ImportList : {
-                ...prevState.ImportList,
+            ImexportList : {
+                ...prevState.ImexportList,
                 [e.target.name] : e.target.value
             }
         }))
     }
     const OnSelectDateChange = (e) => {
-        // console.log(e.format("MM-DD-YYYY"))
         SetdataCreateTranferExport(prevState =>({
             ...prevState,
-            ImportList : {
-                ...prevState.ImportList,
+            ImexportList : {
+                ...prevState.ImexportList,
                 Export_Date : e.format("MM-DD-YYYY")
             }
         }))
+        SetDataCreateValidation(prevState => ({
+            ...prevState,
+            Export_Date : ""
+        }))
     }
-    // console.log(DataCreateChosenWareHouse);
-    const [ChosenWareHouse,SetChosenWareHouse] = useState(null);
     const HandleChosenWareHouse = (e) => {
         SetChosenWareHouse(e)
         SetdataCreateTranferExport(prevState =>({
             ...prevState,
-            ImportList : {
-                ...prevState.ImportList,
-                Import_To : e.code
+            ImexportList : {
+                ...prevState.ImexportList,
+                Import_To : e.WAREHOUSECODE
             }
         }))
+        SetDataCreateValidation(prevState => ({
+            ...prevState,
+            Import_To : ""
+        }))
     }
-    // Khi data null thi close Modal
     useEffect(()=>{
         if(dataSelected.length <= 0)
         {
@@ -220,7 +102,34 @@ const FormChosenWareHouse = (props) => {
             onCancel()
         }
     },[dataSelected.length ===0])
-
+    const successFunc = () => {
+        message.success("Tạo thành công")
+    }
+    const failFunc = () => {
+        message.error("Tạo thành công")
+    }
+    const HandleCreateExportList = async () => {
+        let valid = true;
+        Object.keys(DataCreateTranferExport.ImexportList).forEach(key => {
+            if (DataCreateTranferExport.ImexportList[key] == "")
+            {
+                SetDataCreateValidation(prevState => ({
+                    ...prevState,
+                    [key] : key == "Import_To" || key == "Export_Date" ? "Vui lòng chọn" : "Vui lòng nhập"
+                }))
+                valid = false;
+            }
+        });
+        if(valid)
+        {
+            var res = await createExportTranferList(DataCreateTranferExport,successFunc,failFunc);
+            if (res)
+            {
+                console.log("res",res)
+                resetData()
+            }
+        }
+    }
     return (
     <>
     <Space
@@ -228,7 +137,7 @@ const FormChosenWareHouse = (props) => {
         size="middle"
         style={{
         display: 'grid',
-        gridTemplateColumns : '1.5fr 2.2fr 1.5fr'
+        gridTemplateColumns : '1.2fr 2fr 1.5fr'
         }}
     >
         <Card style={{ height : '100%'}}>
@@ -237,13 +146,19 @@ const FormChosenWareHouse = (props) => {
             <List
                 style={{height : '266px', overflow : 'auto'}}
                 itemLayout="horizontal"
-                dataSource={warehouses}
+                dataSource={Warehouses}
                 renderItem={(warehouses) => (
-                    <List.Item onClick={()=> HandleChosenWareHouse(warehouses)} style={{cursor: "pointer", backgroundColor : ChosenWareHouse  && warehouses.id === ChosenWareHouse.id ? '#e6f7ff' : null}} >
+                    <List.Item onClick={()=> HandleChosenWareHouse(warehouses)} style={{cursor: "pointer", backgroundColor : ChosenWareHouse  && warehouses.ID === ChosenWareHouse.ID ? '#e6f7ff' : null}} >
                         <List.Item.Meta
-                        avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                        title={<a href="https://ant.design">{warehouses.name}</a>}
-                        description={warehouses.location}
+                            style={{padding : '0 .5rem'}}
+                            avatar={<Avatar 
+                                style={{
+                                    backgroundColor: "#e8774f",
+                                    verticalAlign: 'middle',
+                                }} 
+                            icon={<HomeFilled />} />}
+                            title={<a>{warehouses.NAME}</a>}
+                            description={warehouses.LOCATION}
                         />
                     </List.Item>
                 )}                
@@ -252,17 +167,20 @@ const FormChosenWareHouse = (props) => {
         {/* <Divider type="vertical" style={{height : '100%'}}/> */}
         <Tabs defaultActiveKey="1" >
             <TabPane tab="Thông tin phiếu xuất kho" key="1">
-            <Space direction="vertical">
-                <Space direction="horizonal">
-                    <Input value = {DataCreateTranferExport.ImportList.Name} name='Name' addonBefore="Tên phiếu: " onChange={OnTypingData}  />
-                    <Input readOnly value = {ChosenWareHouse ? ChosenWareHouse.code : ""} name='Import_To' addonBefore="Kho đến: " onChange={OnTypingData} />
+                <Space direction="vertical" style={{display : 'flex', rowGap : '1rem'}}>
+                    <Space direction="horizonal">
+                        <Input placeholder={DataCreateValidation.Name ? DataCreateValidation.Name : ""} status={DataCreateValidation.Name ? "error" : "default"} value = {DataCreateTranferExport.ImexportList.Name} name='Name' addonBefore="Tên phiếu: " onChange={OnTypingData}  />
+                        <Input placeholder={DataCreateValidation.Import_To ? DataCreateValidation.Import_To : ""} status={DataCreateValidation.Import_To ? "error" : "default"} readOnly value = {ChosenWareHouse ? ChosenWareHouse.WAREHOUSECODE : ""} name='Import_To' addonBefore="Kho đến: " onChange={OnTypingData} />
+                    </Space>
+                    <Space direction="horizonal">
+                        <Tag color={'default'} style={{fontSize : '0.825rem', padding : "0.3rem 0.5rem", marginRight : '-.525rem' }} >Chọn ngày xuất:</Tag>
+                        <DatePicker status={DataCreateValidation.Export_Date ? "error" : "default"} name= 'Export_Date' onChange={OnSelectDateChange}  placeholder="Chọn ngày"/>
+                    </Space>
+                    <Divider orientation="left">Mô tả</Divider>
+                    <TextArea placeholder={DataCreateValidation.Description ? DataCreateValidation.Description : "Nhập mô tả"} status={DataCreateValidation.Description ? "error" : "default"} value = {DataCreateTranferExport.ImexportList.Description} name='Description' rows={5} onChange={OnTypingData} />
                 </Space>
-                    <DatePicker name= 'Export_Date' onChange={OnSelectDateChange} style={{width : '50%'}} placeholder="Chọn ngày xuất"/>
-                <Divider orientation="left">Mô tả</Divider>
-                <TextArea value = {DataCreateTranferExport.ImportList.Description} name='Description' rows={5} placeholder="Description" onChange={OnTypingData} />
-            </Space>
             </TabPane>
-            <TabPane tab = {<Badge style={{marginTop : '-5px'}} count={ChosenWareHouse ? ChosenWareHouse.name : ""} color="cyan">Thông tin kho xuất tới</Badge>} key="2">
+            <TabPane tab = {<Badge style={{marginTop : '-5px'}} count={ChosenWareHouse ? ChosenWareHouse.NAME : ""} color="cyan">Thông tin kho xuất tới</Badge>} key="2">
                 <Card size="middle">
                     <Space
                         direction="horizonal"
@@ -273,23 +191,31 @@ const FormChosenWareHouse = (props) => {
                     > 
                         {
                             ChosenWareHouse ? 
-                            <>
-                            <div style={{display: 'flex', justifyContent : 'center',}}>
-                                <Avatar src="https://joeschmoe.io/api/v1/random"
-                                    size={{ xs: 24, sm: 32, md: 70, lg: 64, xl: 80, xxl: 100 }}
-                                    //icon={<AntDesignOutlined />}
-                                />
+                            <div  style={{display: 'flex', flexDirection : 'column', gap : '1rem'}} >
+                                <div style={{display: 'flex', justifyContent : 'center',}}>
+                                    <Avatar
+                                         style={{
+                                            backgroundColor: "#f7ce4d",
+                                            verticalAlign: 'middle',
+                                        }} 
+                                        size={{ xs: 24, sm: 32, md: 70, lg: 64, xl: 80, xxl: 100 }}
+                                        icon={<HomeFilled />}
+                                    />
+                                </div>
+                                <Divider type="horizonal" style={{height : '100%'}}/>
+                                <Descriptions  column={4}>
+                                    <Descriptions.Item  span={4} label="Tên">{ChosenWareHouse.NAME ? ChosenWareHouse.NAME  : "Chưa cập nhật"}</Descriptions.Item>
+                                    <Descriptions.Item  span={4} label="Vị trí">{ChosenWareHouse.LOCATION ?  ChosenWareHouse.LOCATION : "Chưa cập nhật" }</Descriptions.Item>
+                                    <Descriptions.Item  span={2} label="Quốc gia">{ChosenWareHouse.COUNTRYCODE ? ChosenWareHouse.COUNTRYCODE : "Chưa cập nhật"}</Descriptions.Item>
+                                    <Descriptions.Item  span={2} label="Tỉnh">{ChosenWareHouse.CITYCODE ? ChosenWareHouse.CITYCODE  : "Chưa cập nhật"}</Descriptions.Item>
+                                    <Descriptions.Item  span={2} label="Quận">{ChosenWareHouse.DISTRICTCODE ? ChosenWareHouse.DISTRICTCODE  : "Chưa cập nhật"}</Descriptions.Item>
+                                    <Descriptions.Item  span={2} label="Phường">{ChosenWareHouse.WARECODE ? ChosenWareHouse.WARECODE  : "Chưa cập nhật"}</Descriptions.Item>
+                                </Descriptions> 
                             </div>
-                            <Divider type="horizonal" style={{height : '100%'}}/>
-                            <Descriptions  column={4}>
-                                <Descriptions.Item  span={4} label="Tên">{ChosenWareHouse.name ? ChosenWareHouse.name  : "Empty"}</Descriptions.Item>
-                                <Descriptions.Item  span={4} label="Vị trí">{ChosenWareHouse.location ?  ChosenWareHouse.location : "Empty" }</Descriptions.Item>
-                                <Descriptions.Item  span={2} label="Mã quốc gia">{ChosenWareHouse.countrycode ? ChosenWareHouse.countrycode : "Empty"}</Descriptions.Item>
-                                <Descriptions.Item  span={2} label="Mã tỉnh">{ChosenWareHouse.provincecode ? ChosenWareHouse.provincecode  : "Empty"}</Descriptions.Item>
-                                <Descriptions.Item  span={2} label="Mã quận">{ChosenWareHouse.districtcode ? ChosenWareHouse.districtcode  : "Empty"}</Descriptions.Item>
-                                <Descriptions.Item  span={2} label="Mã phường">{ChosenWareHouse.wardcode ? ChosenWareHouse.wardcode  : "Empty"}</Descriptions.Item>
-                            </Descriptions> </>
-                            : null
+                            : <>
+                                <Alert message="Chưa chọn kho" type="warning" showIcon  />
+                                <Skeleton></Skeleton>
+                            </>
                         }
                     </Space>
                     <Space
@@ -305,23 +231,30 @@ const FormChosenWareHouse = (props) => {
         </Tabs>
         <Card style={{ height : '100%'}}>
             <Divider orientation="left">Danh sách đơn</Divider>
-            <div style={{display: 'flex',justifyContent : 'flex-end',}}>
-                <Button type="primary">Thêm đơn</Button>
+            <div style={{display: 'flex',justifyContent : 'flex-end',marginBottom : '.5rem'}}>
+                <Button hidden type="primary">Thêm đơn</Button>
             </div>
                     <List
-                        style={{height : '266px', overflow : 'auto'}}
+                        style={{ height : 265, padding: '.7rem', overflow : 'auto'}}
                         itemLayout="horizontal"
                         dataSource={dataSelected}
                         renderItem={(orders) => (
                             <List.Item>
                                 <List.Item.Meta 
-                                avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                                title={<a>{orders.ORDERCODE}</a>}
-                                description={orders.SENDERPHONE}
+                                    avatar={<Avatar  
+                                        style={{
+                                            backgroundColor: "#f7ce4d",
+                                            verticalAlign: 'middle',
+                                        }} 
+                                    icon={<ContainerFilled />} />}
+                                    title={<a>{orders.ORDERCODE}</a>}
+                                    description={orders.SENDERNAME + " - " + orders.SENDERPHONE}
                                 />                 
-                                    <CloseOutlined onClick={() =>
-                                        deleteData(orders)} style ={{fontSize:'20px'}}
-                                    />
+                                    <Tooltip placement="rightTop" title={"Nhấn để xóa"}>
+                                        <CloseOutlined onClick={() =>
+                                            deleteData(orders)} style ={{fontSize:'20px'}}
+                                        />
+                                    </Tooltip>
                             </List.Item>
                             
                         )}                
@@ -333,11 +266,12 @@ const FormChosenWareHouse = (props) => {
         style={{
             display: 'flex' ,
             justifyContent : 'flex-end',
-            columnGap : '.8rem'
+            columnGap : '.8rem',
+            padding : '.7rem 0'
         }}
     >
-        <Button onClick={()=>{HandleClose(); }}>Làm mới</Button>
-        <Button onClick={()=>{}}>Xuất kho</Button>
+        <Button onClick={()=>{HandleClose() }}>Đóng</Button>
+        <Button style={{backgroundColor : "#36bf71", color : "white" }} onClick={HandleCreateExportList}>Xuất kho</Button>
     </Space>
     </>
     );
