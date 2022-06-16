@@ -1,7 +1,8 @@
-import { Space, Tag, Input, Table, DatePicker, Badge, Dropdown, Menu, Tabs } from "antd";
-import { Button } from "antd/lib/radio";
+import { Space, Tag, Input, Table, DatePicker, Badge, Dropdown, Menu, Tabs, Button, message } from "antd";
+
 import { useState } from "react";
 import { MenuOutlined } from "@ant-design/icons";
+import { postConfirmUpdate } from "../Service";
 
 const orders = [
   {
@@ -9,9 +10,10 @@ const orders = [
     id: "4fbe3948-d943-45b9-a95b-580c52e54d00",
     ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d00",
     shipno: "IUTTGVET1",
+
     dropofftype: "1",
     servicetype: "1",
-    ordercode: "IUTTGVET",
+    ORDERCODE: "IUTTGVET",
     shippingchargespayment: "Sender",
     deliverystatus: "PICKUP_WAITING",
     timeregister: "5/19/2022 3:45:51 PM",
@@ -52,7 +54,7 @@ const orders = [
     shipno: "EGDUIEEH1",
     dropofftype: "1",
     servicetype: "1",
-    ordercode: "EGDUIEEH",
+    ORDERCODE: "EGDUIEEH",
     shippingchargespayment: "Sender",
     deliverystatus: "PICKUP_WAITING",
     timeregister: "5/19/2022 4:15:14 PM",
@@ -93,7 +95,7 @@ const orders = [
     shipno: "EGDUIEEH2",
     dropofftype: "1",
     servicetype: "1",
-    ordercode: "EGDUBGEH",
+    ORDERCODE: "EGDUBGEH",
     shippingchargespayment: "Sender",
     deliverystatus: "PICKUP_WAITING",
     timeregister: "5/19/2022 4:15:14 PM",
@@ -129,7 +131,7 @@ const orders = [
   },
 ];
 
-const FormConfirmImport = () => {
+const FormConfirmImport = ({ dataTableConfirm, onCancel }) => {
   const dateFormat = "DD/MM/YYYY";
   const { TabPane } = Tabs;
   const [SelectedData, setSelectedData] = useState([]);
@@ -149,7 +151,7 @@ const FormConfirmImport = () => {
     temp1.splice(idx, 1);
     setData(temp1);
   };
-  console.log(chosenData.length);
+  // console.log(chosenData.length);
   const unChooseOrder = (e) => {
     const temp = [...chosenData];
     const chosenItem = temp.find((item) => item.id === e.id);
@@ -179,6 +181,9 @@ const FormConfirmImport = () => {
     setDropData(temp1);
   };
 
+  const messageSuccess = () => message.success("Thêm thành công");
+  const messageFail = () => message.error("Thất bại");
+
   const HandleSetSelectedData = (e) => {
     setSelectedData(e);
   };
@@ -201,8 +206,8 @@ const FormConfirmImport = () => {
   const listOrderColumns = [
     {
       title: "Mã đơn",
-      dataIndex: "ordercode",
-      key: "ordercode",
+      dataIndex: "ORDERCODE",
+      key: "ORDERCODE",
       width: "20%",
       render: (text) => <a>{text}</a>,
     },
@@ -237,8 +242,8 @@ const FormConfirmImport = () => {
   const chosenColumns = [
     {
       title: "Mã đơn",
-      dataIndex: "ordercode",
-      key: "ordercode",
+      dataIndex: "ORDERCODE",
+      key: "ORDERCODE",
       width: "20%",
       render: (text) => <a>{text}</a>,
     },
@@ -273,8 +278,8 @@ const FormConfirmImport = () => {
   const dropColumns = [
     {
       title: "Mã đơn",
-      dataIndex: "ordercode",
-      key: "ordercode",
+      dataIndex: "ORDERCODE",
+      key: "ORDERCODE",
       width: "20%",
       render: (text) => <a>{text}</a>,
     },
@@ -332,64 +337,80 @@ const FormConfirmImport = () => {
     showHeader: true,
     tableLayout: "unset",
   };
-
+  const onSubmitDataAPI = () => {
+    let IDSuccess = chosenData.map((item) => item.id) || [];
+    let IDFail = dropData?.map((item) => item.id) || [];
+    const dataPOST = {
+      Id: [dataTableConfirm.ID],
+      ActionType: "IMEXPORTLIST_FINISHED",
+      Note: "",
+      ActionData: {
+        IDSuccess,
+        IDFail,
+      },
+    };
+    console.log(dataPOST);
+    postConfirmUpdate(dataPOST, messageSuccess, messageFail);
+  };
   return (
     <>
-      <Space
-        direction="horizontal"
-        size="middle"
-        style={{
-          display: "flex",
-        }}
-      >
-        <Space direction="vertical">
-          <Space direction="horizontal">
-            <Input name="Name" addonBefore="Mã phiếu " />
-            <Input name="Name" addonBefore="Tên phiếu " />
-            <DatePicker format={dateFormat} placeholder="Ngày tạo" />
+      <div style={{ position: "relative", paddingBottom: "40px " }}>
+        <Space
+          direction="horizontal"
+          size="middle"
+          style={{
+            display: "flex",
+          }}
+        >
+          <Space direction="vertical">
+            <Space direction="horizontal">
+              <Input name="Name" addonBefore="Mã phiếu " value={dataTableConfirm.CODE} />
+              <Input name="Name" addonBefore="Tên phiếu " value={dataTableConfirm.NAME} />
+              <DatePicker format={dateFormat} placeholder="Ngày tạo" />
+            </Space>
           </Space>
         </Space>
-      </Space>
-      <Space
-        direction="horizontal"
-        size="middle"
-        style={{
-          display: "flex",
-        }}
-      >
-        <Space>
-          <Table {...listOrderProps} columns={listOrderColumn} dataSource={data} scroll={{ y: 700 }}></Table>
+        <Space
+          direction="horizontal"
+          size="middle"
+          style={{
+            display: "flex",
+          }}
+        >
+          <Space>
+            <Table {...listOrderProps} columns={listOrderColumn} dataSource={data} scroll={{ y: 700 }}></Table>
+          </Space>
+          <Tabs activeKey={activeTab} onChange={(e) => setActiveTab(e)}>
+            <TabPane
+              tab={
+                <Badge style={{ marginTop: "-2px" }} count={chosenData.length} color="cyan">
+                  Danh sách được nhận
+                </Badge>
+              }
+              key="1"
+            >
+              <Table {...chosenProps} columns={chosenColumn} dataSource={chosenData} scroll={{ y: 700 }}></Table>
+            </TabPane>
+            <TabPane
+              tab={
+                <Badge style={{ marginTop: "-2px" }} count={dropData.length} color="cyan">
+                  Danh sách lỗi
+                </Badge>
+              }
+              key="2"
+            >
+              <Table {...chosenProps} columns={dropColumn} dataSource={dropData} scroll={{ y: 700 }}></Table>
+            </TabPane>
+          </Tabs>
         </Space>
-        <Tabs activeKey={activeTab} onChange={(e) => setActiveTab(e)}>
-          <TabPane
-            tab={
-              <Badge style={{ marginTop: "-2px" }} count={chosenData.length} color="cyan">
-                Danh sách đơn hàng chọn lưu kho
-              </Badge>
-            }
-            key="1"
-          >
-            Danh sách đơn hàng chọn lưu kho
-            <Table {...chosenProps} columns={chosenColumn} dataSource={chosenData} scroll={{ y: 700 }}></Table>
-          </TabPane>
-          <TabPane
-            tab={
-              <Badge style={{ marginTop: "-2px" }} count={dropData.length} color="cyan">
-                Danh sách đơn hàng chọn lưu kho
-              </Badge>
-            }
-            key="2"
-          >
-            Danh sách đơn hàng chênh lệch
-            <Table {...chosenProps} columns={dropColumn} dataSource={dropData} scroll={{ y: 700 }}></Table>
-          </TabPane>
-        </Tabs>
-      </Space>
-      <Space>
-        <Button hidden={true} type="primary">
-          Xác nhận nhập kho
-        </Button>
-      </Space>
+
+        <div style={{ position: "absolute", bottom: "-10px", right: "0%" }}>
+          {data.length === 0}
+          <Button onClick={onSubmitDataAPI} disabled={data.length === 0 ? false : true} type="primary">
+            Xác nhận nhập kho
+          </Button>
+        </div>
+      </div>
     </>
   );
 };

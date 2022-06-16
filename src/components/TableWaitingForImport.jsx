@@ -1,257 +1,181 @@
-import { Space, Modal, Table, Tag, Select, DatePicker, Button } from "antd";
+import { Space, Modal, Table, Tag, Select, DatePicker, Button, Row, Col, Typography } from "antd";
+
 import { useState, useEffect } from "react";
 import FormConfirm from "./XacNhanPhieu";
 import FormConfirmTransfer from "./XacNhanToi";
 import FormConfirmImport from "./XacNhanNhapKho";
-
-const importLists = [
-  {
-    key: "4fbe3948-d943-45b9-a95b-580c52e54d00",
-    id: "4fbe3948-d943-45b9-a95b-580c52e54d00",
-    name: "Phiếu 1",
-    description: "Phiếu thu được tạo ngày 30-5",
-    createdDate: "30-05-2022",
-    createdUser: "Thắng xe ôm",
-    status: "IMPORT_ON_PROCESS",
-  },
-  {
-    key: "4fbe3948-d943-45b9-a95b-580c52e54d01",
-    id: "4fbe3948-d943-45b9-a95b-580c52e54d01",
-    name: "Phiếu 2",
-    description: "Phiếu thu 2 được tạo ngày 30-5",
-    createdDate: "30-05-2022",
-    createdUser: "Thắng xe ôm",
-    status: "IMPORT_ON_PROCESS",
-  },
-  {
-    key: "4fbe3948-d943-45b9-a95b-580c52e54d02",
-    id: "4fbe3948-d943-45b9-a95b-580c52e54d02",
-    name: "Phiếu 3",
-    description: "Phiếu thu 3",
-    createdDate: "30-05-2022",
-    createdUser: "Fhuc Boiz",
-    status: "IMPORT_WAITING",
-  },
-  {
-    key: "4fbe3948-d943-45b9-a95b-580c52e54d03",
-    id: "4fbe3948-d943-45b9-a95b-580c52e54d03",
-    name: "Phiếu 4",
-    description: "Phiếu 4",
-    createdDate: "30-05-2022",
-    createdUser: "Fhuc Boiz",
-    status: "IMPORT_WAITING",
-  },
-  {
-    key: "4fbe3948-d943-45b9-a95b-580c52e54d04",
-    id: "4fbe3948-d943-45b9-a95b-580c52e54d04",
-    name: "Phiếu 5",
-    description: "Phiếu 5",
-    createdDate: "30-05-2022",
-    createdUser: "Fhuc Boiz",
-    status: "IMPORT_WAITING",
-  },
-];
-const orders = [
-  {
-    key: "4fbe3948-d943-45b9-a95b-580c52e54d00",
-    id: "4fbe3948-d943-45b9-a95b-580c52e54d00",
-    ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d00",
-    shipno: "IUTTGVET1",
-    dropofftype: "1",
-    servicetype: "1",
-    ordercode: "IUTTGVET",
-    shippingchargespayment: "Sender",
-    deliverystatus: "PICKUP_WAITING",
-    timeregister: "5/19/2022 3:45:51 PM",
-    sendername: "Thành vip pro",
-    senderphone: "0123456789",
-    senderaddress: "thu duc, vn",
-    sendercountrycode: "VN",
-    sendercitycode: "VN-SG",
-    senderdistrictcode: "71010",
-    senderwardcode: "71020",
-    senderpostalcode: "71000",
-    receivername: "test3",
-    receiverphone: "0987654321",
-    receiveraddress: "hanoi, vn",
-    receivercountrycode: "VN",
-    receivercitycode: "VN-HN",
-    receiverdistrictcode: "Cầu Giấy",
-    receiverwardcode: "1",
-    receiverpostalcode: "100000",
-    totalpackages: 2,
-    servicepostage: 1,
-    addedpostage: 1,
-    codpostage: 1,
-    surcharge: 1,
-    totalpostage: 1,
-    vat: 1,
-    weight: 12,
-    cod: 300,
-    currency: "VND",
-    content: null,
-    note: null,
-    warehouse: "WH01",
-  },
-  {
-    key: "47fb9e2a-840f-4444-b730-24ddb31cddca",
-    id: "47fb9e2a-840f-4444-b730-24ddb31cddca",
-    ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d00",
-    shipno: "EGDUIEEH1",
-    dropofftype: "1",
-    servicetype: "1",
-    ordercode: "EGDUIEEH",
-    shippingchargespayment: "Sender",
-    deliverystatus: "PICKUP_WAITING",
-    timeregister: "5/19/2022 4:15:14 PM",
-    sendername: "Thắng ",
-    senderphone: "0747852369",
-    senderaddress: "01/01",
-    sendercountrycode: "VN",
-    sendercitycode: "VN-SG",
-    senderdistrictcode: "71010",
-    senderwardcode: "P3",
-    senderpostalcode: "700000",
-    receivername: "Thành ",
-    receiverphone: "0926985147",
-    receiveraddress: "02/01",
-    receivercountrycode: "VN",
-    receivercitycode: "VN-HN",
-    receiverdistrictcode: "Cầu Giấy",
-    receiverwardcode: "P3",
-    receiverpostalcode: "100000",
-    totalpackages: 1,
-    servicepostage: 1,
-    addedpostage: 1,
-    codpostage: 1,
-    surcharge: 1,
-    totalpostage: 1,
-    vat: 1,
-    weight: 65,
-    cod: 10,
-    currency: "VND",
-    content: null,
-    note: null,
-    warehouse: "WH01",
-  },
-  {
-    key: "47fb9e2a-840f-4444-b730-24ddb31cddcx",
-    id: "47fb9e2a-840f-4444-b730-24ddb31cddcx",
-    ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d01",
-    shipno: "EGDUIEEH1",
-    dropofftype: "1",
-    servicetype: "1",
-    ordercode: "EGDUIEEH",
-    shippingchargespayment: "Sender",
-    deliverystatus: "PICKUP_WAITING",
-    timeregister: "5/19/2022 4:15:14 PM",
-    sendername: "Thắng cute ",
-    senderphone: "0747852369",
-    senderaddress: "Heaven",
-    sendercountrycode: "VN",
-    sendercitycode: "VN-SG",
-    senderdistrictcode: "71010",
-    senderwardcode: "P3",
-    senderpostalcode: "700000",
-    receivername: "Phúc Boiz ",
-    receiverphone: "0926985147",
-    receiveraddress: "Hell",
-    receivercountrycode: "VN",
-    receivercitycode: "VN-HN",
-    receiverdistrictcode: "Cầu Giấy",
-    receiverwardcode: "P3",
-    receiverpostalcode: "100000",
-    totalpackages: 1,
-    servicepostage: 1,
-    addedpostage: 1,
-    codpostage: 1,
-    surcharge: 1,
-    totalpostage: 1,
-    vat: 1,
-    weight: 65,
-    cod: 10,
-    currency: "VND",
-    content: null,
-    note: null,
-    warehouse: "WH01",
-  },
-];
+import moment from "moment";
+import { getImportList } from "../Service";
+import { LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
+const { Text } = Typography;
 
 const TableWaitingForImport = () => {
-  const [data, setData] = useState([]);
+  const [importLists, setImportLists] = useState([]);
+  const [selectStatus, setSelectStatus] = useState("ALL");
   const [SelectedData, setSelectedData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hasData, setHasData] = useState(true);
   const { Option } = Select;
   const { RangePicker } = DatePicker;
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [dataRenderTable, setDataRenderTable] = useState();
   const columns = [
     {
       title: "Mã phiếu",
-      dataIndex: "id",
-      width: "20%",
+      dataIndex: "CODE",
+      width: "10%",
       render: (text) => <a>{text}</a>,
     },
     {
       title: "Tên phiếu",
-      dataIndex: "name",
+      dataIndex: "NAME",
       width: "auto",
     },
     {
       title: "Mô tả",
-      dataIndex: "description",
+      dataIndex: "DESCRIPTION",
       width: "auto",
     },
     {
       title: "Ngày tạo",
-      dataIndex: "createdDate",
+      dataIndex: "CREATEDDATE",
       width: "auto",
+      render: (text, record) => (
+        <Row>
+          <Col span={24}>{record.CREATEDDATE.toString().split("T")[0]}</Col>
+          <Col span={24}>
+            <Text disabled>{record.CREATEDDATE.toString().split("T")[1]}</Text>
+          </Col>
+        </Row>
+      ),
     },
+    // {
+    //   title: "Người tạo",
+    //   dataIndex: "CREATEDUSER",
+    //   width: "auto",
+    // },
     {
-      title: "Người tạo",
-      dataIndex: "createdUser",
+      title: "Kho",
+      dataIndex: "EXPORT_FROM",
       width: "auto",
     },
     {
       title: "Trạng thái",
-      dataIndex: "status",
+      dataIndex: "STATUS",
       width: "auto",
     },
-    // {
-    //   title: 'Chi tiết phiếu nhập',
-    //   key: 'action',
-    //   width : 'auto',
-    //   render: (_,record) => (
-    //       <Tag color={"green"} onClick={()=>ShowConfirmForm(record)}>
-    //          XEM CHI TIẾT
-    //       </Tag>
-    //   )
-    // },
+    {
+      title: "Xem thêm",
+      key: "action",
+      width: "auto",
+      render: (_, record) => (
+        <Tag
+          color={"green"}
+          onClick={() => {
+            setDataRenderTable(record);
+
+            if (record.STATUS === "EXPORT_DRAFT") {
+              ShowConfirmForm();
+            } else if (record.STATUS === "IMPORTLIST_WAITING") {
+              ShowConfirmImportForm();
+            } else {
+              ShowConfirmTransferForm();
+            }
+          }}
+        >
+          Chi tiết
+        </Tag>
+      ),
+    },
   ];
+
+  //ngày thánh năm
+  console.log(dataRenderTable, " chính");
+  let prev15now = new Date(Date.now() - 1296000000);
+  let now = new Date(Date.now());
+
+  const [date, setDate] = useState({
+    startDate: prev15now.getFullYear() + "-" + (prev15now.getMonth() + 1) + "-" + prev15now.getDate(),
+    endDate: now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate(),
+  });
+  const OnSelectDateChange = (e) => {
+    if (e)
+      setDate((prevState) => ({
+        ...prevState,
+        startDate: e[0].format("YYYY-MM-DD"),
+        endDate: e[1].format("YYYY-MM-DD"),
+      }));
+  };
+  const loadingStateTrue = () => {
+    setLoading(true);
+  };
+  const loadingStateFail = () => {
+    setLoading(false);
+  };
+
+  async function getImportLists(loadingFail) {
+    let res = await getImportList(date, loadingFail);
+    setImportLists(res);
+
+    // var res_ = res.RESPONSES;
+    // if (res_) {
+    //   let res__ = res_.map((x) => ({ ...x, key: x.ID }));
+    // setImportLists(res__);
+    // }
+  }
+  const load = () => {
+    setIsLoading(false);
+  };
+  const fetchDataTable = async () => {
+    setIsLoading(true);
+    let res = await getImportList(date, load);
+    setImportLists(res);
+  };
+  useEffect(() => {
+    loadingStateTrue();
+    getImportLists(loadingStateFail);
+  }, []);
 
   const HandleSetSelectedData = (e) => {
     setSelectedData(e);
   };
 
+  const handleChangeSelect = (e) => {
+    setSelectStatus(e);
+  };
   const defaultTitle = () => (
     <Space
       direction="horizonal"
-      style={{ display: "flex", justifyContent: "flex-start", padding: ".8rem", fontWeight: "bold" }}
+      style={{
+        display: "flex",
+        justifyContent: "flex-start",
+        padding: ".8rem",
+        fontWeight: "bold",
+        position: "relative",
+      }}
     >
       <p style={{ marginRight: "6rem" }}>Kho: </p>
       <Select
+        onChange={handleChangeSelect}
         defaultValue="Chờ xác nhận"
         style={{
           width: 130,
           marginRight: "6rem",
         }}
       >
-        <Option value="Chờ xác nhận">Chờ xác nhận</Option>
-        <Option value="Đang xử lý">Đang xử lý</Option>
-        <Option value="Chờ nhập">Chờ nhập</Option>
+        <Option value="ALL">Tất Cả</Option>
+        <Option value="EXPORT_DRAFT">Chờ xác nhận</Option>
+        <Option value="EXPORTLIST_CONFIRM">Đang xử lý</Option>
+        <Option value="IMPORTLIST_WAITING">Chờ nhập</Option>
       </Select>
-      <RangePicker format="DD-MM-YYYY" />
-      <Button onClick={ShowConfirmForm} hidden={!SelectedData.length} type="primary">
+      <RangePicker
+        defaultValue={[moment(`${date.startDate}`, "YYYY-MM-DD"), moment(`${date.endDate}`, "YYYY-MM-DD")]}
+        onChange={OnSelectDateChange}
+      />
+      <div style={{ position: "absolute", top: "50%", right: "5%" }}>
+        {isLoading ? <LoadingOutlined /> : <ReloadOutlined onClick={fetchDataTable} />}
+      </div>
+      {/* <Button onClick={ShowConfirmForm} hidden={!SelectedData.length} type="primary">
         Xác nhận
       </Button>
       <Button onClick={ShowConfirmTransferForm} hidden={!SelectedData.length} type="primary">
@@ -259,7 +183,7 @@ const TableWaitingForImport = () => {
       </Button>
       <Button onClick={ShowConfirmImportForm} hidden={!SelectedData.length} type="primary">
         Xác nhận nhập kho
-      </Button>
+      </Button>{" "} */}
     </Space>
   );
 
@@ -275,16 +199,19 @@ const TableWaitingForImport = () => {
     },
     tableLayout: "unset",
   };
+
   const [IsConfirmFormShow, setIsConfirmFormShow] = useState(false);
   const [IsConfirmTransferFormShow, setIsConfirmTransferFormShow] = useState(false);
   const [IsConfirmImportFormShow, setIsConfirmImportFormShow] = useState(false);
-
+  //type:EXPORT_DRAFT
   const ShowConfirmForm = () => {
     setIsConfirmFormShow(true);
   };
+  //Type:IMPORT_WAITING
   const ShowConfirmTransferForm = () => {
     setIsConfirmTransferFormShow(true);
   };
+  //Type:IMPORT_ONPROCESS
   const ShowConfirmImportForm = () => {
     setIsConfirmImportFormShow(true);
   };
@@ -306,29 +233,38 @@ const TableWaitingForImport = () => {
           position: ["bottomRight"],
         }}
         columns={tableColumns}
-        dataSource={hasData ? importLists : []}
+        dataSource={selectStatus === "ALL" ? importLists : importLists.filter((x) => x.STATUS == selectStatus)}
+        //{hasData ? importListStatus : []}
         scroll={{ y: 700 }}
       />
-      <Modal title="Xác nhận phiếu" width="100%" visible={IsConfirmFormShow} onCancel={HandleClose} footer={false}>
-        <FormConfirm onCancel={HandleClose} getSelectedData={getSelectedData} />
+      <Modal title="Xác nhận phiếu" width="80%" visible={IsConfirmFormShow} onCancel={HandleClose} footer={false}>
+        <FormConfirm dataTable={dataRenderTable} onCancel={HandleClose} getSelectedData={getSelectedData} />
       </Modal>
       <Modal
         title="Xác nhận điều chuyển tới"
-        width="100%"
+        width="80%"
         visible={IsConfirmTransferFormShow}
         onCancel={HandleClose}
         footer={false}
       >
-        <FormConfirmTransfer onCancel={HandleClose} getSelectedData={getSelectedData} />
+        <FormConfirmTransfer
+          onCancel={HandleClose}
+          dataTableConfirm={dataRenderTable}
+          getSelectedData={getSelectedData}
+        />
       </Modal>
       <Modal
         title="Xác nhận nhập kho"
-        width="100%"
+        width="80%"
         visible={IsConfirmImportFormShow}
         onCancel={HandleClose}
         footer={false}
       >
-        <FormConfirmImport onCancel={HandleClose} getSelectedData={getSelectedData} />
+        <FormConfirmImport
+          dataTableConfirm={dataRenderTable}
+          onCancel={HandleClose}
+          getSelectedData={getSelectedData}
+        />
       </Modal>
     </>
   );

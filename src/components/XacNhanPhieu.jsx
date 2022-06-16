@@ -1,7 +1,9 @@
-import { Space, Tag, Input, Table, DatePicker, Card, Popconfirm, message } from "antd";
-import { Button } from "antd/lib/radio";
-import { useState } from "react";
+import { Space, Tag, Input, Table, DatePicker, Card, Popconfirm, message, Divider, Tabs, Button } from "antd";
 
+import { useState } from "react";
+import { postConfirmUpdate } from "../Service";
+import "./Style/XacNhanPhieu.css";
+const { TabPane } = Tabs;
 const orders = [
   {
     key: "4fbe3948-d943-45b9-a95b-580c52e54d00",
@@ -128,11 +130,11 @@ const orders = [
   },
 ];
 
-const FormConfirm = () => {
+const FormConfirm = ({ dataTable, onCancel }) => {
   const dateFormat = "DD/MM/YYYY";
   const [data, setData] = useState(orders);
   const [visible, setVisible] = useState(false);
-
+  console.log(dataTable, " component C");
   // table
 
   const listOrderColumns = [
@@ -158,10 +160,12 @@ const FormConfirm = () => {
       width: "20%",
     },
   ];
+  const defaultTitle = () => <h4>Danh sách đơn trong phiếu</h4>;
   // end table
   const listOrderColumn = listOrderColumns.map((item) => ({ ...item, ellipsis: true }));
   const listOrderProps = {
     bordered: true,
+    title: defaultTitle,
     pagination: false,
     size: "middle",
     showHeader: true,
@@ -171,57 +175,108 @@ const FormConfirm = () => {
   const showPopconfirm = () => {
     setVisible(true);
   };
+  const messageSuccess = () => message.success("Thành công!!");
+  const messageError = () => message.error("Error");
   const confirm = (e) => {
-    message.success("Success");
+    const dataPOST = {
+      Id: [dataTable.ID],
+      ActionType: "IMEXPORTLIST_CONFIRM",
+      Note: "",
+      ActionData: {
+        IDSuccess: [],
+        IDFail: [],
+      },
+    };
+    console.log(dataPOST);
+    postConfirmUpdate(dataPOST, messageSuccess, messageError);
     setVisible(false);
   };
   const cancel = (e) => {
-    message.error("Error");
     setVisible(false);
+    onCancel();
   };
 
   return (
     <>
-      <Space
-        direction="horizontal"
+      {/* <Space
+        direction="vertical"
         size="middle"
         style={{
           display: "flex",
         }}
       >
         <Space direction="vertical">
-          <Space direction="horizontal">
-            <Input name="Name" addonBefore="Mã phiếu " />
-            <Input name="Name" addonBefore="Tên phiếu " />
-            <DatePicker format={dateFormat} placeholder="Ngày tạo" />
-          </Space>
-        </Space>
+                          <Space direction="horizontal">
+                            <Input name="Name" addonBefore="Mã phiếu " />
+                            <Input name="Name" addonBefore="Tên phiếu " />
+                            <DatePicker format={dateFormat} placeholder="Ngày tạo" />
+                          </Space>
+                        </Space>
+      </Space> */}
+      <Space
+        direction="horizontal"
+        size="middle"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1.2fr 1fr",
+          alignItems: "flex-start",
+        }}
+      >
+        <Table {...listOrderProps} columns={listOrderColumn} dataSource={data} scroll={{ y: 700 }}></Table>
+        <div style={{ width: "100%" }}>
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="Thông tin phiếu" key="1">
+              <Card style={{ width: "100%" }}>
+                <div style={{ width: "100%", paddingBottom: "15px" }}>
+                  <Input value={dataTable.CODE} name="code" addonBefore="Mã phiếu " />
+                </div>
+                <div style={{ width: "100%", paddingBottom: "15px" }}>
+                  <Input value={dataTable.NAME} name="Name" addonBefore="Tên phiếu " />
+                </div>
+                <div style={{ margin: "0 auto", alignItems: "center", textAlign: "center" }}>
+                  <div>
+                    <div>
+                      <iframe
+                        src="https://giphy.com/embed/FsV5XLAiKJQB18MXrs"
+                        width={100}
+                        height={165}
+                        frameBorder={0}
+                        className="giphy-embed"
+                        allowFullScreen
+                      />
+                      <p>
+                        <a href="https://giphy.com/gifs/cat-tata-FsV5XLAiKJQB18MXrs">via GIPHY</a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </TabPane>
+          </Tabs>
+        </div>
       </Space>
       <Space
         direction="horizontal"
         size="middle"
         style={{
           display: "flex",
+          paddingTop: "20px",
+          justifyContent: "flex-end",
         }}
       >
-        <Card>
-          Danh sách đơn hàng trong phiếu
-          <Table {...listOrderProps} columns={listOrderColumn} dataSource={data} scroll={{ y: 700 }}></Table>
-        </Card>
+        <Popconfirm
+          title="Xác nhận phiếu nhập kho được chọn?"
+          onConfirm={confirm}
+          onCancel={cancel}
+          okText="Xác nhận"
+          cancelText="Hủy"
+          visible={visible}
+        >
+          <Button onClick={showPopconfirm} type="primary">
+            Xác nhận phiếu
+          </Button>
+        </Popconfirm>
       </Space>
-
-      <Popconfirm
-        title="Xác nhận phiếu nhập kho được chọn?"
-        onConfirm={confirm}
-        onCancel={cancel}
-        okText="Xác nhận"
-        cancelText="Hủy"
-        visible={visible}
-      >
-        <Button onClick={showPopconfirm} type="primary">
-          Xác nhận phiếu
-        </Button>
-      </Popconfirm>
     </>
   );
 };

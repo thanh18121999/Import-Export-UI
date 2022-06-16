@@ -1,16 +1,17 @@
-import { Space, Tag, Input, Table, DatePicker, Card, Popconfirm, message } from "antd";
-import { Button } from "antd/lib/radio";
+import { Space, Tag, Input, Table, DatePicker, Card, Popconfirm, message, Button } from "antd";
+
 import { useState } from "react";
+import { postConfirmUpdate } from "../Service";
 
 const orders = [
   {
     key: "4fbe3948-d943-45b9-a95b-580c52e54d00",
-    id: "4fbe3948-d943-45b9-a95b-580c52e54d00",
+    ID: "4fbe3948-d943-45b9-a95b-580c52e54d00",
     ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d00",
     shipno: "IUTTGVET1",
     dropofftype: "1",
     servicetype: "1",
-    ordercode: "IUTTGVET",
+    ORDERCODE: "IUTTGVET",
     shippingchargespayment: "Sender",
     deliverystatus: "PICKUP_WAITING",
     timeregister: "5/19/2022 3:45:51 PM",
@@ -46,12 +47,12 @@ const orders = [
   },
   {
     key: "47fb9e2a-840f-4444-b730-24ddb31cddca",
-    id: "47fb9e2a-840f-4444-b730-24ddb31cddca",
+    ID: "47fb9e2a-840f-4444-b730-24ddb31cddca",
     ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d00",
     shipno: "EGDUIEEH1",
     dropofftype: "1",
     servicetype: "1",
-    ordercode: "EGDUIEEH",
+    ORDERCODE: "EGDUIEEH",
     shippingchargespayment: "Sender",
     deliverystatus: "PICKUP_WAITING",
     timeregister: "5/19/2022 4:15:14 PM",
@@ -87,12 +88,12 @@ const orders = [
   },
   {
     key: "47fb9e2a-840f-4444-b730-24ddb31cddcx",
-    id: "47fb9e2a-840f-4444-b730-24ddb31cddcx",
+    ID: "47fb9e2a-840f-4444-b730-24ddb31cddcx",
     ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d01",
     shipno: "EGDUIEEH2",
     dropofftype: "1",
     servicetype: "1",
-    ordercode: "EGDUBGEH",
+    ORDERCODE: "EGDUBGEH",
     shippingchargespayment: "Sender",
     deliverystatus: "PICKUP_WAITING",
     timeregister: "5/19/2022 4:15:14 PM",
@@ -128,7 +129,8 @@ const orders = [
   },
 ];
 
-const FormConfirmTransfer = () => {
+const FormConfirmTransfer = ({ dataTableConfirm, onCancel }) => {
+  console.log(dataTableConfirm);
   const dateFormat = "DD/MM/YYYY";
   const [data, setData] = useState(orders);
   const [visible, setVisible] = useState(false);
@@ -137,7 +139,7 @@ const FormConfirmTransfer = () => {
   const listOrderColumns = [
     {
       title: "Mã đơn",
-      dataIndex: "ordercode",
+      dataIndex: "ORDERCODE",
       width: "20%",
       render: (text) => <a>{text}</a>,
     },
@@ -170,8 +172,20 @@ const FormConfirmTransfer = () => {
   const showPopconfirm = () => {
     setVisible(true);
   };
+  const messageSuccess = () => message.success("Thành công!!");
+  const messageError = () => message.error("Error");
   const confirm = (e) => {
-    message.success("Success");
+    const dataPOST = {
+      Id: [dataTableConfirm.ID],
+      ActionType: "IMEXPORTLIST_RECEIVER",
+      Note: "",
+      ActionData: {
+        IDSuccess: [],
+        IDFail: [],
+      },
+    };
+    console.log(dataPOST);
+    postConfirmUpdate(dataPOST, messageSuccess, messageError);
     setVisible(false);
   };
   const cancel = (e) => {
@@ -190,9 +204,13 @@ const FormConfirmTransfer = () => {
       >
         <Space direction="vertical">
           <Space direction="horizontal">
-            <Input name="Name" addonBefore="Mã phiếu " />
-            <Input name="Name" addonBefore="Tên phiếu " />
-            <DatePicker format={dateFormat} placeholder="Ngày tạo" />
+            <Input name="Name" addonBefore="Mã phiếu " value={dataTableConfirm.CODE} />
+            <Input name="Name" addonBefore="Tên phiếu " value={dataTableConfirm.NAME} />
+            {/* <DatePicker
+              format={dateFormat}
+              placeholder="Ngày tạo"
+              //  value={dataTableConfirm.CREATEDDATE}
+            /> */}
           </Space>
         </Space>
       </Space>
@@ -208,18 +226,24 @@ const FormConfirmTransfer = () => {
           <Table {...listOrderProps} columns={listOrderColumn} dataSource={data} scroll={{ y: 700 }}></Table>
         </Card>
       </Space>
-      <Popconfirm
-        title="Xác nhận phiếu điều chuyển đã tới kho?"
-        onConfirm={confirm}
-        onCancel={cancel}
-        okText="Xác nhận"
-        cancelText="Hủy"
-        visible={visible}
-      >
-        <Button onClick={showPopconfirm} type="primary">
-          Xác nhận tới
-        </Button>
-      </Popconfirm>
+      {dataTableConfirm.STATUS === "IMPORTLIST_SUCCESS" ? (
+        ""
+      ) : (
+        <div style={{ textAlign: "end", padding: "20px 0 10px " }}>
+          <Popconfirm
+            title="Xác nhận phiếu điều chuyển đã tới kho?"
+            onConfirm={confirm}
+            onCancel={cancel}
+            okText="Xác nhận"
+            cancelText="Hủy"
+            visible={visible}
+          >
+            <Button onClick={showPopconfirm} type="primary">
+              Xác nhận tới
+            </Button>
+          </Popconfirm>
+        </div>
+      )}
     </>
   );
 };
