@@ -5,7 +5,7 @@ import FormConfirm from "./XacNhanPhieu";
 import FormConfirmTransfer from "./XacNhanToi";
 import FormConfirmImport from "./XacNhanNhapKho";
 import moment from "moment";
-import { getImportList } from "../Service";
+import { getDetailImExport, getImportList } from "../Service";
 import { LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
 const { Text } = Typography;
 
@@ -19,6 +19,16 @@ const TableWaitingForImport = () => {
   const { RangePicker } = DatePicker;
   const [isLoading, setIsLoading] = useState(false);
   const [dataRenderTable, setDataRenderTable] = useState();
+  const [detailList, setDetailList] = useState([]);
+
+  //ApiDetail
+  const getDetailImExportAPI = async (record) => {
+    let ID = record.ID;
+    const res = await getDetailImExport({ ID });
+    setDetailList(res);
+    console.log(res, "ress");
+  };
+  // console.log(detailList, " detal chinhs");
   const columns = [
     {
       title: "Mã phiếu",
@@ -75,10 +85,13 @@ const TableWaitingForImport = () => {
             setDataRenderTable(record);
 
             if (record.STATUS === "EXPORT_DRAFT") {
+              getDetailImExportAPI(record);
               ShowConfirmForm();
             } else if (record.STATUS === "IMPORTLIST_WAITING") {
+              getDetailImExportAPI(record);
               ShowConfirmImportForm();
             } else {
+              getDetailImExportAPI(record);
               ShowConfirmTransferForm();
             }
           }}
@@ -90,7 +103,7 @@ const TableWaitingForImport = () => {
   ];
 
   //ngày thánh năm
-  console.log(dataRenderTable, " chính");
+  console.log(dataRenderTable, "TWFI");
   let prev15now = new Date(Date.now() - 1296000000);
   let now = new Date(Date.now());
 
@@ -175,15 +188,6 @@ const TableWaitingForImport = () => {
       <div style={{ position: "absolute", top: "50%", right: "5%" }}>
         {isLoading ? <LoadingOutlined /> : <ReloadOutlined onClick={fetchDataTable} />}
       </div>
-      {/* <Button onClick={ShowConfirmForm} hidden={!SelectedData.length} type="primary">
-        Xác nhận
-      </Button>
-      <Button onClick={ShowConfirmTransferForm} hidden={!SelectedData.length} type="primary">
-        Xác nhận tới
-      </Button>
-      <Button onClick={ShowConfirmImportForm} hidden={!SelectedData.length} type="primary">
-        Xác nhận nhập kho
-      </Button>{" "} */}
     </Space>
   );
 
@@ -238,7 +242,12 @@ const TableWaitingForImport = () => {
         scroll={{ y: 700 }}
       />
       <Modal title="Xác nhận phiếu" width="80%" visible={IsConfirmFormShow} onCancel={HandleClose} footer={false}>
-        <FormConfirm dataTable={dataRenderTable} onCancel={HandleClose} getSelectedData={getSelectedData} />
+        <FormConfirm
+          detailList={detailList}
+          dataTable={dataRenderTable}
+          onCancel={HandleClose}
+          getSelectedData={getSelectedData}
+        />
       </Modal>
       <Modal
         title="Xác nhận điều chuyển tới"
@@ -248,6 +257,7 @@ const TableWaitingForImport = () => {
         footer={false}
       >
         <FormConfirmTransfer
+          detailList={detailList}
           onCancel={HandleClose}
           dataTableConfirm={dataRenderTable}
           getSelectedData={getSelectedData}
@@ -261,6 +271,7 @@ const TableWaitingForImport = () => {
         footer={false}
       >
         <FormConfirmImport
+          detailList={detailList}
           dataTableConfirm={dataRenderTable}
           onCancel={HandleClose}
           getSelectedData={getSelectedData}

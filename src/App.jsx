@@ -1,6 +1,6 @@
 import { Tabs } from "antd";
 import TableReleasedOrder from "./components/TableReleasedOrder.jsx";
-import TableWaitingForExport from "./components/TableWaitingForExport.jsx";
+// import TableWaitingForExport from "./components/TableWaitingForExport.jsx";
 import TableWaitingForImport from "./components/TableWaitingForImport.jsx";
 
 const { TabPane } = Tabs;
@@ -14,9 +14,9 @@ const ManageWarehouseImportExportOrder = () => {
         <TabPane tab="Xuất kho" key="1">
           <TableReleasedOrder />
         </TabPane>
-        <TabPane tab="Chờ xuất kho" key="2">
+        {/* <TabPane tab="Chờ xuất kho" key="2">
           <TableWaitingForExport />
-        </TabPane>
+        </TabPane> */}
       </Tabs>
     </>
   );

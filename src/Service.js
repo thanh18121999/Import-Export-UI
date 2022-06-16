@@ -103,7 +103,7 @@ export const getImportList = async(data, loadingFail) => {
     }
 };
 
-export const postConfirmUpdate = async(data, successFunc, errorFuc) => {
+export const postConfirmUpdate = async(data, successFunc, errorFuc, onCancel = () => {}) => {
     let token = await getToken();
     let dataJson = JSON.stringify(data);
     let res = await fetch(`${HOST_SHIPMENT}/api/im-export/update`, {
@@ -118,9 +118,37 @@ export const postConfirmUpdate = async(data, successFunc, errorFuc) => {
     res = await res.json();
     if (res.STATUSCODE == 200 && res.MESSAGE == "Success") {
         successFunc();
+        onCancel();
         return res;
     } else {
         errorFuc();
+        return null;
+    }
+};
+
+export const getDetailImExport = async(data) => {
+    let token = await getToken();
+    let dataJson = JSON.stringify(data);
+    let res = await fetch(`${HOST_SHIPMENT}/api/im-export/get-detail`, {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: dataJson,
+    });
+    res = await res.json();
+    if (res.STATUSCODE == 200 && res.MESSAGE == "Success") {
+        var res_ = res.RESPONSES;
+
+        if (res_) {
+            let res__ = res_.map((x) => ({...x, key: x.ID }));
+            return res__;
+        }
+
+        return res_;
+    } else {
         return null;
     }
 };

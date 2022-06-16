@@ -1,137 +1,139 @@
-import { Space, Tag, Input, Table, DatePicker, Badge, Dropdown, Menu, Tabs, Button, message } from "antd";
+import { Space, Tag, Input, Table, DatePicker, Badge, Dropdown, Menu, Tabs, Button, message, Popconfirm } from "antd";
 
 import { useState } from "react";
 import { MenuOutlined } from "@ant-design/icons";
 import { postConfirmUpdate } from "../Service";
+import { useEffect } from "react";
 
-const orders = [
-  {
-    key: "123",
-    id: "4fbe3948-d943-45b9-a95b-580c52e54d00",
-    ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d00",
-    shipno: "IUTTGVET1",
+// const orders = [
+//   {
+//     key: "123",
+//     id: "4fbe3948-d943-45b9-a95b-580c52e54d00",
+//     ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d00",
+//     shipno: "IUTTGVET1",
 
-    dropofftype: "1",
-    servicetype: "1",
-    ORDERCODE: "IUTTGVET",
-    shippingchargespayment: "Sender",
-    deliverystatus: "PICKUP_WAITING",
-    timeregister: "5/19/2022 3:45:51 PM",
-    sendername: "Thành vip pro",
-    senderphone: "0123456789",
-    senderaddress: "thu duc, vn",
-    sendercountrycode: "VN",
-    sendercitycode: "VN-SG",
-    senderdistrictcode: "71010",
-    senderwardcode: "71020",
-    senderpostalcode: "71000",
-    receivername: "test3",
-    receiverphone: "0987654321",
-    receiveraddress: "hanoi, vn",
-    receivercountrycode: "VN",
-    receivercitycode: "VN-HN",
-    receiverdistrictcode: "Cầu Giấy",
-    receiverwardcode: "1",
-    receiverpostalcode: "100000",
-    totalpackages: 2,
-    servicepostage: 1,
-    addedpostage: 1,
-    codpostage: 1,
-    surcharge: 1,
-    totalpostage: 1,
-    vat: 1,
-    weight: 12,
-    cod: 300,
-    currency: "VND",
-    content: null,
-    note: null,
-    warehouse: "WH01",
-  },
-  {
-    key: "1234",
-    id: "47fb9e2a-840f-4444-b730-24ddb31cddca",
-    ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d00",
-    shipno: "EGDUIEEH1",
-    dropofftype: "1",
-    servicetype: "1",
-    ORDERCODE: "EGDUIEEH",
-    shippingchargespayment: "Sender",
-    deliverystatus: "PICKUP_WAITING",
-    timeregister: "5/19/2022 4:15:14 PM",
-    sendername: "Thắng ",
-    senderphone: "0747852369",
-    senderaddress: "01/01",
-    sendercountrycode: "VN",
-    sendercitycode: "VN-SG",
-    senderdistrictcode: "71010",
-    senderwardcode: "P3",
-    senderpostalcode: "700000",
-    receivername: "Thành ",
-    receiverphone: "0926985147",
-    receiveraddress: "02/01",
-    receivercountrycode: "VN",
-    receivercitycode: "VN-HN",
-    receiverdistrictcode: "Cầu Giấy",
-    receiverwardcode: "P3",
-    receiverpostalcode: "100000",
-    totalpackages: 1,
-    servicepostage: 1,
-    addedpostage: 1,
-    codpostage: 1,
-    surcharge: 1,
-    totalpostage: 1,
-    vat: 1,
-    weight: 65,
-    cod: 10,
-    currency: "VND",
-    content: null,
-    note: null,
-    warehouse: "WH01",
-  },
-  {
-    key: "12345",
-    id: "47fb9e2a-840f-4444-b730-24ddb31cddcx",
-    ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d01",
-    shipno: "EGDUIEEH2",
-    dropofftype: "1",
-    servicetype: "1",
-    ORDERCODE: "EGDUBGEH",
-    shippingchargespayment: "Sender",
-    deliverystatus: "PICKUP_WAITING",
-    timeregister: "5/19/2022 4:15:14 PM",
-    sendername: "Thắng cute ",
-    senderphone: "0747852369",
-    senderaddress: "Heaven",
-    sendercountrycode: "VN",
-    sendercitycode: "VN-SG",
-    senderdistrictcode: "71010",
-    senderwardcode: "P3",
-    senderpostalcode: "700000",
-    receivername: "Phúc Boiz ",
-    receiverphone: "0926985147",
-    receiveraddress: "Hell",
-    receivercountrycode: "VN",
-    receivercitycode: "VN-HN",
-    receiverdistrictcode: "Cầu Giấy",
-    receiverwardcode: "P3",
-    receiverpostalcode: "100000",
-    totalpackages: 1,
-    servicepostage: 1,
-    addedpostage: 1,
-    codpostage: 1,
-    surcharge: 1,
-    totalpostage: 1,
-    vat: 1,
-    weight: 65,
-    cod: 10,
-    currency: "VND",
-    content: null,
-    note: null,
-    warehouse: "WH01",
-  },
-];
+//     dropofftype: "1",
+//     servicetype: "1",
+//     ORDERCODE: "IUTTGVET",
+//     shippingchargespayment: "Sender",
+//     deliverystatus: "PICKUP_WAITING",
+//     timeregister: "5/19/2022 3:45:51 PM",
+//     sendername: "Thành vip pro",
+//     senderphone: "0123456789",
+//     SENDERADDRESS: "thu duc, vn",
+//     sendercountrycode: "VN",
+//     sendercitycode: "VN-SG",
+//     senderdistrictcode: "71010",
+//     senderwardcode: "71020",
+//     senderpostalcode: "71000",
+//     receivername: "test3",
+//     receiverphone: "0987654321",
+//     RECEIVERADDRESS: "hanoi, vn",
+//     receivercountrycode: "VN",
+//     receivercitycode: "VN-HN",
+//     receiverdistrictcode: "Cầu Giấy",
+//     receiverwardcode: "1",
+//     receiverpostalcode: "100000",
+//     totalpackages: 2,
+//     servicepostage: 1,
+//     addedpostage: 1,
+//     codpostage: 1,
+//     surcharge: 1,
+//     totalpostage: 1,
+//     vat: 1,
+//     WEIGHT: 12,
+//     cod: 300,
+//     currency: "VND",
+//     content: null,
+//     note: null,
+//     warehouse: "WH01",
+//   },
+//   {
+//     key: "1234",
+//     id: "47fb9e2a-840f-4444-b730-24ddb31cddca",
+//     ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d00",
+//     shipno: "EGDUIEEH1",
+//     dropofftype: "1",
+//     servicetype: "1",
+//     ORDERCODE: "EGDUIEEH",
+//     shippingchargespayment: "Sender",
+//     deliverystatus: "PICKUP_WAITING",
+//     timeregister: "5/19/2022 4:15:14 PM",
+//     sendername: "Thắng ",
+//     senderphone: "0747852369",
+//     SENDERADDRESS: "01/01",
+//     sendercountrycode: "VN",
+//     sendercitycode: "VN-SG",
+//     senderdistrictcode: "71010",
+//     senderwardcode: "P3",
+//     senderpostalcode: "700000",
+//     receivername: "Thành ",
+//     receiverphone: "0926985147",
+//     RECEIVERADDRESS: "02/01",
+//     receivercountrycode: "VN",
+//     receivercitycode: "VN-HN",
+//     receiverdistrictcode: "Cầu Giấy",
+//     receiverwardcode: "P3",
+//     receiverpostalcode: "100000",
+//     totalpackages: 1,
+//     servicepostage: 1,
+//     addedpostage: 1,
+//     codpostage: 1,
+//     surcharge: 1,
+//     totalpostage: 1,
+//     vat: 1,
+//     WEIGHT: 65,
+//     cod: 10,
+//     currency: "VND",
+//     content: null,
+//     note: null,
+//     warehouse: "WH01",
+//   },
+//   {
+//     key: "12345",
+//     id: "47fb9e2a-840f-4444-b730-24ddb31cddcx",
+//     ticketID: "4fbe3948-d943-45b9-a95b-580c52e54d01",
+//     shipno: "EGDUIEEH2",
+//     dropofftype: "1",
+//     servicetype: "1",
+//     ORDERCODE: "EGDUBGEH",
+//     shippingchargespayment: "Sender",
+//     deliverystatus: "PICKUP_WAITING",
+//     timeregister: "5/19/2022 4:15:14 PM",
+//     sendername: "Thắng cute ",
+//     senderphone: "0747852369",
+//     SENDERADDRESS: "Heaven",
+//     sendercountrycode: "VN",
+//     sendercitycode: "VN-SG",
+//     senderdistrictcode: "71010",
+//     senderwardcode: "P3",
+//     senderpostalcode: "700000",
+//     receivername: "Phúc Boiz ",
+//     receiverphone: "0926985147",
+//     RECEIVERADDRESS: "Hell",
+//     receivercountrycode: "VN",
+//     receivercitycode: "VN-HN",
+//     receiverdistrictcode: "Cầu Giấy",
+//     receiverwardcode: "P3",
+//     receiverpostalcode: "100000",
+//     totalpackages: 1,
+//     servicepostage: 1,
+//     addedpostage: 1,
+//     codpostage: 1,
+//     surcharge: 1,
+//     totalpostage: 1,
+//     vat: 1,
+//     WEIGHT: 65,
+//     cod: 10,
+//     currency: "VND",
+//     content: null,
+//     note: null,
+//     warehouse: "WH01",
+//   },
+// ];
 
-const FormConfirmImport = ({ dataTableConfirm, onCancel }) => {
+const FormConfirmImport = ({ dataTableConfirm, onCancel, detailList }) => {
+  const [orders, setOrders] = useState();
   const dateFormat = "DD/MM/YYYY";
   const { TabPane } = Tabs;
   const [SelectedData, setSelectedData] = useState([]);
@@ -140,13 +142,20 @@ const FormConfirmImport = ({ dataTableConfirm, onCancel }) => {
   const [chosenData, setChosenData] = useState([]);
   const [dropData, setDropData] = useState([]);
   const [activeTab, setActiveTab] = useState("1");
+  const [visible, setVisible] = useState(false);
 
+  console.log(data, "dataTable");
+  useEffect(() => {
+    setOrders(detailList);
+    setData(detailList);
+    console.log("1");
+  }, [detailList]);
   const chooseOrder = (e) => {
     setActiveTab("1");
     const temp = [...data];
-    const chosenItem = temp.find((item) => item.id === e.id);
+    const chosenItem = temp.find((item) => item.ID === e.ID);
     setChosenData([...chosenData, chosenItem]);
-    const idx = temp.findIndex((item) => item.id === e.id);
+    const idx = temp.findIndex((item) => item.ID === e.ID);
     const temp1 = [...data];
     temp1.splice(idx, 1);
     setData(temp1);
@@ -154,9 +163,9 @@ const FormConfirmImport = ({ dataTableConfirm, onCancel }) => {
   // console.log(chosenData.length);
   const unChooseOrder = (e) => {
     const temp = [...chosenData];
-    const chosenItem = temp.find((item) => item.id === e.id);
+    const chosenItem = temp.find((item) => item.ID === e.ID);
     setData([...data, chosenItem]);
-    const idx = temp.findIndex((item) => item.id === e.id);
+    const idx = temp.findIndex((item) => item.ID === e.ID);
     const temp1 = [...chosenData];
     temp1.splice(idx, 1);
     setChosenData(temp1);
@@ -164,18 +173,18 @@ const FormConfirmImport = ({ dataTableConfirm, onCancel }) => {
   const dropOrder = (e) => {
     setActiveTab("2");
     const temp = [...data];
-    const dropItem = temp.find((item) => item.id === e.id);
+    const dropItem = temp.find((item) => item.ID === e.ID);
     setDropData([...dropData, dropItem]);
-    const idx = temp.findIndex((item) => item.id === e.id);
+    const idx = temp.findIndex((item) => item.ID === e.ID);
     const temp1 = [...data];
     temp1.splice(idx, 1);
     setData(temp1);
   };
   const unDropOrder = (e) => {
     const temp = [...dropData];
-    const dropItem = temp.find((item) => item.id === e.id);
+    const dropItem = temp.find((item) => item.ID === e.ID);
     setData([...data, dropItem]);
-    const idx = temp.findIndex((item) => item.id === e.id);
+    const idx = temp.findIndex((item) => item.ID === e.ID);
     const temp1 = [...dropData];
     temp1.splice(idx, 1);
     setDropData(temp1);
@@ -213,20 +222,20 @@ const FormConfirmImport = ({ dataTableConfirm, onCancel }) => {
     },
     {
       title: "Địa chỉ gửi",
-      dataIndex: "senderaddress",
-      key: "senderaddress",
+      dataIndex: "SENDERADDRESS",
+      key: "SENDERADDRESS",
       width: "20%",
     },
     {
       title: "Địa chỉ nhận",
-      dataIndex: "receiveraddress",
-      key: "receiveraddress",
+      dataIndex: "RECEIVERADDRESS",
+      key: "RECEIVERADDRESS",
       width: "20%",
     },
     {
       title: "Khối lượng",
-      dataIndex: "weight",
-      key: "weight",
+      dataIndex: "WEIGHT",
+      key: "WEIGHT",
       width: "20%",
     },
     {
@@ -249,20 +258,20 @@ const FormConfirmImport = ({ dataTableConfirm, onCancel }) => {
     },
     {
       title: "Địa chỉ gửi",
-      dataIndex: "senderaddress",
-      key: "senderaddress",
+      dataIndex: "SENDERADDRESS",
+      key: "SENDERADDRESS",
       width: "20%",
     },
     {
       title: "Địa chỉ nhận",
-      dataIndex: "receiveraddress",
-      key: "receiveraddress",
+      dataIndex: "RECEIVERADDRESS",
+      key: "RECEIVERADDRESS",
       width: "20%",
     },
     {
       title: "Khối lượng",
-      dataIndex: "weight",
-      key: "weight",
+      dataIndex: "WEIGHT",
+      key: "WEIGHT",
       width: "20%",
     },
     {
@@ -285,20 +294,20 @@ const FormConfirmImport = ({ dataTableConfirm, onCancel }) => {
     },
     {
       title: "Địa chỉ gửi",
-      dataIndex: "senderaddress",
-      key: "senderaddress",
+      dataIndex: "SENDERADDRESS",
+      key: "SENDERADDRESS",
       width: "20%",
     },
     {
       title: "Địa chỉ nhận",
-      dataIndex: "receiveraddress",
-      key: "receiveraddress",
+      dataIndex: "RECEIVERADDRESS",
+      key: "RECEIVERADDRESS",
       width: "20%",
     },
     {
       title: "Khối lượng",
-      dataIndex: "weight",
-      key: "weight",
+      dataIndex: "WEIGHT",
+      key: "WEIGHT",
       width: "20%",
     },
     {
@@ -337,9 +346,12 @@ const FormConfirmImport = ({ dataTableConfirm, onCancel }) => {
     showHeader: true,
     tableLayout: "unset",
   };
-  const onSubmitDataAPI = () => {
-    let IDSuccess = chosenData.map((item) => item.id) || [];
-    let IDFail = dropData?.map((item) => item.id) || [];
+  const showPopconfirm = () => {
+    setVisible(true);
+  };
+  const confirm = (e) => {
+    let IDSuccess = chosenData.map((item) => item.ID) || [];
+    let IDFail = dropData?.map((item) => item.ID) || [];
     const dataPOST = {
       Id: [dataTableConfirm.ID],
       ActionType: "IMEXPORTLIST_FINISHED",
@@ -350,8 +362,14 @@ const FormConfirmImport = ({ dataTableConfirm, onCancel }) => {
       },
     };
     console.log(dataPOST);
-    postConfirmUpdate(dataPOST, messageSuccess, messageFail);
+    postConfirmUpdate(dataPOST, messageSuccess, messageFail, onCancel);
+    setVisible(false);
   };
+  const cancel = (e) => {
+    setVisible(false);
+    onCancel();
+  };
+
   return (
     <>
       <div style={{ position: "relative", paddingBottom: "40px " }}>
@@ -405,10 +423,18 @@ const FormConfirmImport = ({ dataTableConfirm, onCancel }) => {
         </Space>
 
         <div style={{ position: "absolute", bottom: "-10px", right: "0%" }}>
-          {data.length === 0}
-          <Button onClick={onSubmitDataAPI} disabled={data.length === 0 ? false : true} type="primary">
-            Xác nhận nhập kho
-          </Button>
+          <Popconfirm
+            title="Xác nhận phiếu nhập kho được chọn?"
+            onConfirm={confirm}
+            onCancel={cancel}
+            okText="Xác nhận"
+            cancelText="Hủy"
+            visible={visible}
+          >
+            <Button onClick={showPopconfirm} disabled={data?.length === 0 ? false : true} type="primary">
+              Xác nhận nhập kho
+            </Button>
+          </Popconfirm>
         </div>
       </div>
     </>
