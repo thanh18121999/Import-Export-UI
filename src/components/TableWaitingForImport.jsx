@@ -170,7 +170,7 @@ const TableWaitingForImport = () => {
       <p style={{ marginRight: "6rem" }}>Kho: </p>
       <Select
         onChange={handleChangeSelect}
-        defaultValue="Chờ xác nhận"
+        defaultValue="ALL"
         style={{
           width: 130,
           marginRight: "6rem",
