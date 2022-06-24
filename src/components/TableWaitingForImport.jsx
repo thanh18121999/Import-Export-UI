@@ -6,7 +6,7 @@ import FormConfirmTransfer from "./XacNhanToi";
 import FormConfirmImport from "./XacNhanNhapKho";
 import moment from "moment";
 import { getDetailImExport, getImportList } from "../Service";
-import { LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
+import { HomeOutlined, LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
 const { Text } = Typography;
 
 const TableWaitingForImport = () => {
@@ -103,7 +103,6 @@ const TableWaitingForImport = () => {
   ];
 
   //ngày thánh năm
-  console.log(dataRenderTable, "TWFI");
   let prev15now = new Date(Date.now() - 1296000000);
   let now = new Date(Date.now());
 
@@ -129,12 +128,6 @@ const TableWaitingForImport = () => {
   async function getImportLists(loadingFail) {
     let res = await getImportList(date, loadingFail);
     setImportLists(res);
-
-    // var res_ = res.RESPONSES;
-    // if (res_) {
-    //   let res__ = res_.map((x) => ({ ...x, key: x.ID }));
-    // setImportLists(res__);
-    // }
   }
   const load = () => {
     setIsLoading(false);
@@ -157,7 +150,49 @@ const TableWaitingForImport = () => {
     setSelectStatus(e);
   };
   const defaultTitle = () => (
-    <Space
+    <>
+      <Space direction="horizonal" style={{ display: "flex", justifyContent: "space-between" }}>
+        <Space>
+          <div style={{ display: "flex", gap: "1.2rem", fontWeight: "bold", paddingRight: "30px" }}>
+            <HomeOutlined style={{ fontSize: "2rem", color: "#8c8c8c" }} />
+            <h3 style={{ lineHeight: 2.3, color: "#8c8c8c", fontWeight: "bold" }}>Kho</h3>
+          </div>
+          <div>
+            <label style={{ paddingRight: "5px", fontWeight: "bold" }} htmlFor="selcetAll">
+              Trạng thái phiếu
+            </label>
+            <Select
+              id="selcetAll"
+              onChange={handleChangeSelect}
+              defaultValue="ALL"
+              style={{
+                width: 130,
+                marginRight: "6rem",
+              }}
+            >
+              <Option value="ALL">Tất Cả</Option>
+              <Option value="EXPORT_DRAFT">Chờ xác nhận</Option>
+              <Option value="EXPORTLIST_CONFIRM">Đang xử lý</Option>
+              <Option value="IMPORT_WAITING">Chờ nhập</Option>
+            </Select>
+          </div>
+        </Space>
+
+        <Space>
+          <RangePicker
+            defaultValue={[moment(`${date.startDate}`, "YYYY-MM-DD"), moment(`${date.endDate}`, "YYYY-MM-DD")]}
+            onChange={OnSelectDateChange}
+          />
+          <Button
+            icon={isLoading ? <LoadingOutlined /> : <ReloadOutlined onClick={fetchDataTable} />}
+            onClick={fetchDataTable}
+            type="primary"
+          >
+            Tải lại
+          </Button>
+        </Space>
+      </Space>
+      {/* <Space
       direction="horizonal"
       style={{
         display: "flex",
@@ -167,28 +202,19 @@ const TableWaitingForImport = () => {
         position: "relative",
       }}
     >
-      <p style={{ marginRight: "6rem" }}>Kho: </p>
-      <Select
-        onChange={handleChangeSelect}
-        defaultValue="Chờ xác nhận"
-        style={{
-          width: 130,
-          marginRight: "6rem",
-        }}
-      >
-        <Option value="ALL">Tất Cả</Option>
-        <Option value="EXPORT_DRAFT">Chờ xác nhận</Option>
-        <Option value="EXPORTLIST_CONFIRM">Đang xử lý</Option>
-        <Option value="IMPORTLIST_WAITING">Chờ nhập</Option>
-      </Select>
+      <p style={{ marginRight: "6rem" }}>Kho </p>
+     
+
       <RangePicker
         defaultValue={[moment(`${date.startDate}`, "YYYY-MM-DD"), moment(`${date.endDate}`, "YYYY-MM-DD")]}
         onChange={OnSelectDateChange}
       />
       <div style={{ position: "absolute", top: "50%", right: "5%" }}>
-        {isLoading ? <LoadingOutlined /> : <ReloadOutlined onClick={fetchDataTable} />}
+        
       </div>
     </Space>
+    */}{" "}
+    </>
   );
 
   const tableColumns = columns.map((item) => ({ ...item, ellipsis: true }));
@@ -239,7 +265,7 @@ const TableWaitingForImport = () => {
         columns={tableColumns}
         dataSource={selectStatus === "ALL" ? importLists : importLists.filter((x) => x.STATUS == selectStatus)}
         //{hasData ? importListStatus : []}
-        scroll={{ y: 700 }}
+        scroll={{ y: "75vh" }}
       />
       <Modal title="Xác nhận phiếu" width="80%" visible={IsConfirmFormShow} onCancel={HandleClose} footer={false}>
         <FormConfirm

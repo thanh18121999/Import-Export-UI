@@ -152,3 +152,70 @@ export const getDetailImExport = async(data) => {
         return null;
     }
 };
+
+export const getPickedUpOrder = async(loadingFail) => {
+    var json_request = JSON.stringify({
+        Type: "ORDERSHIPPING_GET_PICKUPED",
+    });
+    let token = await getToken();
+    let res = await fetch(`${HOST_SHIPMENT}/api/shipment/query`, {
+        method: "POST",
+        // credentials : "include",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: json_request,
+    });
+    res = await res.json();
+    if (res.STATUSCODE == 200 && res.MESSAGE == "Success") {
+        var res_ = res.RESPONSES;
+
+        if (res_) {
+            let res__ = res_.map((x) => ({...x, key: x.ID }));
+            return res__;
+        }
+        // loadingFail();
+        return res_;
+    } else {
+        // loadingFail();
+        return null;
+    }
+};
+
+export const postOrderList = async(data, successFunc, errorFuc, reloadData) => {
+    const IDLIST = [];
+    data.map((item) => IDLIST.push(item.ID));
+    var json_request = JSON.stringify({
+        ActionType: "ORDERSHIPPING_IMPORT",
+        ID: IDLIST,
+    });
+    console.log(json_request, "id");
+    let token = await getToken();
+    let res = await fetch(`${HOST_SHIPMENT}/api/shipment/delivery/update`, {
+        method: "POST",
+        // credentials : "include",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: json_request,
+    });
+    res = await res.json();
+    if (res.STATUSCODE == 200 && res.MESSAGE == "Success") {
+        var res_ = res.MESSAGE;
+
+        // if (res_) {
+        //     let res__ = res_.map((x) => ({...x, key: x.ID }));
+        //     return res__;
+        // }
+        // loadingFail();
+        successFunc();
+        reloadData();
+        return res_;
+    } else {
+        let res_ = res.MESSAGE;
+        errorFuc(res_);
+        return res_;
+    }
+};
