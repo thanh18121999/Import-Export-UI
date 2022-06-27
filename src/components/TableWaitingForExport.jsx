@@ -33,12 +33,12 @@ const columns = [
     dataIndex: "status",
     width: "auto",
   },
-  {
-    title: "Chi tiết phiếu xuất",
-    key: "action",
-    width: "auto",
-    render: () => <Button style={{ backgroundColor: "#66ff99" }}>XEM CHI TIẾT</Button>,
-  },
+  // {
+  //   title: "Chi tiết phiếu xuất",
+  //   key: "action",
+  //   width: "auto",
+  //   render: () => <Button style={{ backgroundColor: "#66ff99" }}>XEM CHI TIẾT</Button>,
+  // },
 ];
 const exportLists = [
   {

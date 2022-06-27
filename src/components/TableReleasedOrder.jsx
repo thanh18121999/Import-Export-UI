@@ -8,12 +8,14 @@ const { Text } = Typography;
 const columns = [
   {
     title: "Mã đơn hàng",
+    align: "center",
     dataIndex: "ORDERCODE",
     width: "10%",
     render: (text) => <a>{text}</a>,
   },
   {
     title: "Người gửi",
+    align: "center",
     dataIndex: "SENDERINFO_",
     width: "10%",
     render: (text, record) => (
@@ -25,11 +27,13 @@ const columns = [
   },
   {
     title: "Địa chỉ gửi",
+    align: "center",
     dataIndex: "SENDERADDRESS",
     width: "15%",
   },
   {
     title: "Người nhận",
+    align: "center",
     dataIndex: "RECEIVERINFO_",
     width: "10%",
     render: (text, record) => (
@@ -41,37 +45,31 @@ const columns = [
   },
   {
     title: "Địa chỉ nhận",
+    align: "center",
     dataIndex: "RECEIVERADDRESS",
     width: "15%",
   },
   {
     title: "Khối lượng",
+    align: "center",
     dataIndex: "WEIGHT",
     align: "center",
     width: "auto",
   },
   {
     title: "COD",
+    align: "center",
     dataIndex: "COD",
     align: "center",
     width: "auto",
   },
   {
     title: "Trạng thái",
+    align: "center",
     dataIndex: "DELIVERYSTATUS",
     width: "auto",
     render: (text) => (text == "RELEASED" ? <Tag color={"green"}>Đã phát hành</Tag> : ""),
   },
-  // {
-  //     title:'Action',
-  //     dataIndex: 'action',
-  //     width: 'auto',
-  //     render:(text) => (
-  //         <Tag color = {'green'}>
-
-  //         </Tag>
-  //     )
-  // },
 ];
 const defaultExpandable = {
   expandedRowRender: (record) => (
@@ -175,7 +173,14 @@ const TableReleasedOrder = () => {
         dataSource={hasData ? data : []}
         scroll={{ y: 700 }}
       />
-      <Modal title="Phiếu xuất kho" width="80%" visible={IsConfirmExportShow} onCancel={HandleClose1} footer={null}>
+      <Modal
+        zIndex={2000}
+        title="Phiếu xuất kho"
+        width="80%"
+        visible={IsConfirmExportShow}
+        onCancel={HandleClose1}
+        footer={null}
+      >
         <FormConfirmExport
           onCancel={HandleClose}
           getSelectedData={getSelectedData}

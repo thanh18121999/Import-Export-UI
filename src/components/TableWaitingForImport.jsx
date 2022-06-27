@@ -1,4 +1,4 @@
-import { Space, Modal, Table, Tag, Select, DatePicker, Button, Row, Col, Typography } from "antd";
+import { Space, Modal, Table, Tag, Select, DatePicker, Button, Row, Col, Typography, Tooltip } from "antd";
 
 import { useState, useEffect } from "react";
 import FormConfirm from "./XacNhanPhieu";
@@ -6,7 +6,7 @@ import FormConfirmTransfer from "./XacNhanToi";
 import FormConfirmImport from "./XacNhanNhapKho";
 import moment from "moment";
 import { getDetailImExport, getImportList } from "../Service";
-import { HomeOutlined, LoadingOutlined, ReloadOutlined } from "@ant-design/icons";
+import { HomeOutlined, LoadingOutlined, ReloadOutlined, SelectOutlined } from "@ant-design/icons";
 const { Text } = Typography;
 
 const TableWaitingForImport = () => {
@@ -14,7 +14,7 @@ const TableWaitingForImport = () => {
   const [selectStatus, setSelectStatus] = useState("ALL");
   const [SelectedData, setSelectedData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [hasData, setHasData] = useState(true);
+  // const [hasData, setHasData] = useState(true);
   const { Option } = Select;
   const { RangePicker } = DatePicker;
   const [isLoading, setIsLoading] = useState(false);
@@ -32,22 +32,26 @@ const TableWaitingForImport = () => {
   const columns = [
     {
       title: "Mã phiếu",
+      align: "center",
       dataIndex: "CODE",
       width: "10%",
       render: (text) => <a>{text}</a>,
     },
     {
       title: "Tên phiếu",
+      align: "center",
       dataIndex: "NAME",
       width: "auto",
     },
     {
       title: "Mô tả",
+      align: "center",
       dataIndex: "DESCRIPTION",
       width: "auto",
     },
     {
       title: "Ngày tạo",
+      align: "center",
       dataIndex: "CREATEDDATE",
       width: "auto",
       render: (text, record) => (
@@ -66,21 +70,24 @@ const TableWaitingForImport = () => {
     // },
     {
       title: "Kho",
+      align: "center",
       dataIndex: "EXPORT_FROM",
       width: "auto",
     },
     {
       title: "Trạng thái",
+      align: "center",
       dataIndex: "STATUS",
       width: "auto",
     },
     {
+      align: "center",
       title: "Xem thêm",
       key: "action",
       width: "auto",
       render: (_, record) => (
-        <Tag
-          color={"green"}
+        <Tooltip
+          title="Xem chi tiết"
           onClick={() => {
             setDataRenderTable(record);
 
@@ -96,8 +103,8 @@ const TableWaitingForImport = () => {
             }
           }}
         >
-          Chi tiết
-        </Tag>
+          <SelectOutlined style={{ fontSize: "24px", color: "#1363DF" }} />
+        </Tooltip>
       ),
     },
   ];
@@ -213,7 +220,7 @@ const TableWaitingForImport = () => {
         
       </div>
     </Space>
-    */}{" "}
+    */}
     </>
   );
 
@@ -267,7 +274,14 @@ const TableWaitingForImport = () => {
         //{hasData ? importListStatus : []}
         scroll={{ y: "75vh" }}
       />
-      <Modal title="Xác nhận phiếu" width="80%" visible={IsConfirmFormShow} onCancel={HandleClose} footer={false}>
+      <Modal
+        zIndex={2000}
+        title="Xác nhận phiếu"
+        width="80%"
+        visible={IsConfirmFormShow}
+        onCancel={HandleClose}
+        footer={false}
+      >
         <FormConfirm
           detailList={detailList}
           dataTable={dataRenderTable}
@@ -276,6 +290,7 @@ const TableWaitingForImport = () => {
         />
       </Modal>
       <Modal
+        zIndex={2000}
         title="Xác nhận điều chuyển tới"
         width="80%"
         visible={IsConfirmTransferFormShow}
@@ -290,6 +305,7 @@ const TableWaitingForImport = () => {
         />
       </Modal>
       <Modal
+        zIndex={2000}
         title="Xác nhận nhập kho"
         width="80%"
         visible={IsConfirmImportFormShow}

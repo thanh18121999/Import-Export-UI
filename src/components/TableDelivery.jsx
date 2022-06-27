@@ -1,9 +1,25 @@
-import {Form,Radio,Space,Switch,Table,Tag,Card,Button,
-  message,Modal,Divider,List,Tabs,Badge, Dropdown, Menu,} from "antd";
+import {
+  Form,
+  Radio,
+  Space,
+  Switch,
+  Table,
+  Tag,
+  Card,
+  Button,
+  message,
+  Modal,
+  Divider,
+  List,
+  Tabs,
+  Badge,
+  Dropdown,
+  Menu,
+} from "antd";
 import { useState, useEffect } from "react";
-import { MoreOutlined } from '@ant-design/icons';
+import { MoreOutlined } from "@ant-design/icons";
 
-const {TabPane} = Tabs;
+const { TabPane } = Tabs;
 const orders = [
   {
     key: "4fbe3948-d943-45b9-a95b-580c52e54d00",
@@ -271,22 +287,22 @@ const dropDownOrder = (
   <Menu
     items={[
       {
-        label: <Space onClick={()=> alert('PTC')}>Phát thành công</Space>,
-        key: '1',
+        label: <Space onClick={() => alert("PTC")}>Phát thành công</Space>,
+        key: "1",
       },
       {
-        type: 'divider',
+        type: "divider",
       },
       {
-        label: <Space onClick={()=> alert('PTB')}>Phát thất bại</Space>,
-        key: '2',
+        label: <Space onClick={() => alert("PTB")}>Phát thất bại</Space>,
+        key: "2",
       },
       {
-        type: 'divider',
+        type: "divider",
       },
       {
-        label: <Space onClick={()=> alert('PL')}>Phát lại</Space>,
-        key: '3',
+        label: <Space onClick={() => alert("PL")}>Phát lại</Space>,
+        key: "3",
       },
     ]}
   />
@@ -295,11 +311,7 @@ const dropDownOrder = (
 //End Dropdown PTC/PTB/PL
 const defaultExpandable = {
   expandedRowRender: (record) => (
-    <Space
-      direction="horizonal"
-      size="middle"
-      style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}
-    ></Space>
+    <Space direction="horizonal" size="middle" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr" }}></Space>
   ),
 };
 const TableWaitingForExport = () => {
@@ -335,114 +347,101 @@ const TableWaitingForExport = () => {
           Xem Chi Tiết
         </Button>
         <Modal
+          zIndex={2000}
           title="Phiếu phát"
           centered
           visible={visible}
           onOk={() => setVisible(false)}
           onCancel={() => setVisible(false)}
-          width= '60%'
+          width="60%"
         >
           <Space
             derection="horizonal"
             size="middle"
             style={{
-              display: 'grid',
-              gridTemplateColumns : '1fr 1.5fr',
-              alignItems: 'initial'
-              }}
+              display: "grid",
+              gridTemplateColumns: "1fr 1.5fr",
+              alignItems: "initial",
+            }}
           >
             <Card>
-                <Divider orientation="left">Danh sách đơn</Divider>
-                <List 
-                    style = {{height : '300px',overflow: 'auto'}}
-                    itemLayout = "horizonal"
-                    dataSource={orders}
-                    renderItem = {(orders) => (
-                        <List.Item>
-                            <List.Item.Meta 
-                                title={orders.ordercode}
-                                description={orders.receiveraddress}
-                            />
-                            <Dropdown overlay={dropDownOrder} trigger={['click']}>
-                              <a onClick={e => e.preventDefault()}>
-                                <Space>
-                                  <MoreOutlined style={{fontSize:"18px",color:"#000"}} />
-                                </Space>
-                              </a>
-                            </Dropdown>
-                        </List.Item>
-                    )}
-                />
+              <Divider orientation="left">Danh sách đơn</Divider>
+              <List
+                style={{ height: "300px", overflow: "auto" }}
+                itemLayout="horizonal"
+                dataSource={orders}
+                renderItem={(orders) => (
+                  <List.Item>
+                    <List.Item.Meta title={orders.ordercode} description={orders.receiveraddress} />
+                    <Dropdown overlay={dropDownOrder} trigger={["click"]}>
+                      <a onClick={(e) => e.preventDefault()}>
+                        <Space>
+                          <MoreOutlined style={{ fontSize: "18px", color: "#000" }} />
+                        </Space>
+                      </a>
+                    </Dropdown>
+                  </List.Item>
+                )}
+              />
             </Card>
             <Tabs defaultActiveKey="1">
               <TabPane tab="Phát thành công" key="1">
                 <List
-                  style={{height:"266px",overflow:"auto"}}
-                  itemLayout= "horizonal"
-                  dataSource= {orders}
-                  renderItem ={(ordersSuccess) => (
+                  style={{ height: "266px", overflow: "auto" }}
+                  itemLayout="horizonal"
+                  dataSource={orders}
+                  renderItem={(ordersSuccess) => (
                     <List.Item>
-                      <List.Item.Meta
-                        title ={ordersSuccess.ordercode}
-                        description={ordersSuccess.receiveraddress}
-                      />
+                      <List.Item.Meta title={ordersSuccess.ordercode} description={ordersSuccess.receiveraddress} />
                     </List.Item>
                   )}
                 />
               </TabPane>
               <TabPane tab="Phát thất bại" key="2">
                 <List
-                    style={{height:"266px",overflow:"auto"}}
-                    itemLayout= "horizonal"
-                    dataSource= {orders}
-                    renderItem ={(ordersSuccess) => (
-                      <List.Item>
-                        <List.Item.Meta
-                          title ={ordersSuccess.ordercode}
-                          description={ordersSuccess.receiveraddress}
-                        />
-                      </List.Item>
-                    )}
-                  />
+                  style={{ height: "266px", overflow: "auto" }}
+                  itemLayout="horizonal"
+                  dataSource={orders}
+                  renderItem={(ordersSuccess) => (
+                    <List.Item>
+                      <List.Item.Meta title={ordersSuccess.ordercode} description={ordersSuccess.receiveraddress} />
+                    </List.Item>
+                  )}
+                />
               </TabPane>
-                <List
-                    style={{height:"266px",overflow:"auto"}}
-                    itemLayout= "horizonal"
-                    dataSource= {orders}
-                    renderItem ={(ordersSuccess) => (
-                      <List.Item>
-                        <List.Item.Meta
-                          title ={ordersSuccess.ordercode}
-                          description={ordersSuccess.receiveraddress}
-                        />
-                      </List.Item>
-                    )}
-                  />
+              <List
+                style={{ height: "266px", overflow: "auto" }}
+                itemLayout="horizonal"
+                dataSource={orders}
+                renderItem={(ordersSuccess) => (
+                  <List.Item>
+                    <List.Item.Meta title={ordersSuccess.ordercode} description={ordersSuccess.receiveraddress} />
+                  </List.Item>
+                )}
+              />
               <TabPane tab="Phát lại" key="3">
                 <List
-                    style={{height:"266px",overflow:"auto"}}
-                    itemLayout= "horizonal"
-                    dataSource= {orders}
-                    renderItem ={(ordersSuccess) => (
-                      <List.Item>
-                        <List.Item.Meta
-                          title ={ordersSuccess.ordercode}
-                          description={ordersSuccess.receiveraddress}
-                        />
-                      </List.Item>
-                    )}
-                  />
+                  style={{ height: "266px", overflow: "auto" }}
+                  itemLayout="horizonal"
+                  dataSource={orders}
+                  renderItem={(ordersSuccess) => (
+                    <List.Item>
+                      <List.Item.Meta title={ordersSuccess.ordercode} description={ordersSuccess.receiveraddress} />
+                    </List.Item>
+                  )}
+                />
               </TabPane>
             </Tabs>
           </Space>
-          <Space direction="horizonal"
+          <Space
+            direction="horizonal"
             size="middle"
             style={{
-                display: 'flex' ,
-                justifyContent : 'flex-end',
+              display: "flex",
+              justifyContent: "flex-end",
             }}
           >
-            <Button type="primary" >Tiếp tục</Button>
+            <Button type="primary">Tiếp tục</Button>
           </Space>
         </Modal>
       </>

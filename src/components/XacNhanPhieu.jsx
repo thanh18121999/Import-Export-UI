@@ -1,4 +1,4 @@
-import { Space, Tag, Input, Table, DatePicker, Card, Popconfirm, message, Divider, Tabs, Button } from "antd";
+import { Space, Tag, Input, Table, DatePicker, Card, Popconfirm, message, Divider, Tabs, Button, Skeleton } from "antd";
 
 import { useEffect, useState } from "react";
 import { postConfirmUpdate } from "../Service";
@@ -23,21 +23,25 @@ const FormConfirm = ({ dataTable, onCancel, detailList }) => {
       title: "Mã đơn",
       dataIndex: "ORDERCODE",
       width: "20%",
+      align: "center",
       render: (text) => <a>{text}</a>,
     },
     {
       title: "Địa chỉ gửi",
+      align: "center",
       dataIndex: "SENDERADDRESS",
       width: "20%",
     },
     {
       title: "Địa chỉ nhận",
+      align: "center",
       dataIndex: "RECEIVERADDRESS",
       width: "20%",
     },
     {
       title: "Khối lượng",
-      dataIndex: "weight",
+      align: "center",
+      dataIndex: "WEIGHT",
       width: "20%",
     },
   ];
@@ -60,7 +64,7 @@ const FormConfirm = ({ dataTable, onCancel, detailList }) => {
   const messageError = () => message.error("Error");
   const confirm = (e) => {
     const dataPOST = {
-      Id: [dataTable.ID],
+      Id: dataTable.ID,
       ActionType: "IMEXPORTLIST_CONFIRM",
       Note: "",
       ActionData: {
@@ -116,7 +120,7 @@ const FormConfirm = ({ dataTable, onCancel, detailList }) => {
                 </div>
                 <div style={{ margin: "0 auto", alignItems: "center", textAlign: "center" }}>
                   <div>
-                    <div>
+                    {/* <div>
                       <iframe
                         src="https://giphy.com/embed/FsV5XLAiKJQB18MXrs"
                         width={100}
@@ -128,7 +132,13 @@ const FormConfirm = ({ dataTable, onCancel, detailList }) => {
                       <p>
                         <a href="https://giphy.com/gifs/cat-tata-FsV5XLAiKJQB18MXrs">via GIPHY</a>
                       </p>
-                    </div>
+                    </div> */}
+                    <Skeleton
+                      avatar
+                      paragraph={{
+                        rows: 4,
+                      }}
+                    />
                   </div>
                 </div>
               </Card>

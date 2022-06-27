@@ -129,6 +129,7 @@ export const postConfirmUpdate = async(data, successFunc, errorFuc, onCancel = (
 export const getDetailImExport = async(data) => {
     let token = await getToken();
     let dataJson = JSON.stringify(data);
+    console.log(dataJson, "data Json");
     let res = await fetch(`${HOST_SHIPMENT}/api/im-export/get-detail`, {
         method: "POST",
 
